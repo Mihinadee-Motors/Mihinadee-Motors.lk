@@ -31,6 +31,14 @@
             color: #333333;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
+        .search-results-hero {
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 1000px;
+        }
         .cart-float {
             position: fixed;
             bottom: 90px;
@@ -91,17 +99,26 @@
         </nav>
     </header>
 
-    <!-- Top Search Bar (Header එකට පහළින් උඩින්ම පිහිටයි) -->
+    <!-- Top Search Bar -->
     <div class="top-search-wrapper">
         <div class="search-container">
-            <input type="text" id="search-input" class="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)...">
+            <form onsubmit="handleSearchSubmit(event)">
+                <input type="search" id="search-input" class="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)...">
+            </form>
         </div>
     </div>
 
-    <section class="hero">
-        <h1>Precision <span>Repair</span> & Luxury <span>Modification</span></h1>
-        <p>Your vehicle deserves elite care. From advanced engine tuning to custom body styling, we bring high performance and supreme luxury to your ride.</p>
-        <a href="contact.html" class="btn-gold">Schedule Service</a>
+    <!-- Hero Section -->
+    <section class="hero" id="hero-section">
+        <!-- Default Hero Content -->
+        <div id="default-hero-content">
+            <h1>Precision <span>Repair</span> & Luxury <span>Modification</span></h1>
+            <p>Your vehicle deserves elite care. From advanced engine tuning to custom body styling, we bring high performance and supreme luxury to your ride.</p>
+            <a href="contact.html" class="btn-gold">Schedule Service</a>
+        </div>
+
+        <!-- Search Results Container -->
+        <div id="search-results-grid" class="search-results-hero"></div>
     </section>
 
     <div class="container" style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">
@@ -109,7 +126,7 @@
         <div class="grid" id="home-products-grid"></div>
     </div>
 
-    <!-- Floating Cart Icon above WhatsApp Icon -->
+    <!-- Floating Cart Icon -->
     <div class="cart-float" onclick="openCartModal()">
         <i class="fas fa-shopping-cart"></i>
         <span class="cart-count" id="cart-count">0</span>
@@ -180,13 +197,51 @@
         });
 
         function filterProducts() {
-            const input = document.getElementById('search-input').value.toLowerCase();
+            const inputField = document.getElementById('search-input');
+            const input = inputField.value.toLowerCase().trim();
+            const defaultHero = document.getElementById('default-hero-content');
+            const searchResultsGrid = document.getElementById('search-results-grid');
             const cards = document.querySelectorAll('#home-products-grid .card');
+
+            if (input === "") {
+                defaultHero.style.display = "block";
+                searchResultsGrid.style.display = "none";
+                searchResultsGrid.innerHTML = "";
+                cards.forEach(card => card.style.display = "flex");
+                return;
+            }
+
+            defaultHero.style.display = "none";
+            searchResultsGrid.style.display = "grid";
+            searchResultsGrid.innerHTML = "";
+
+            let foundCount = 0;
             cards.forEach(card => {
                 const title = card.querySelector('h3').innerText.toLowerCase();
-                if (title.includes(input)) card.style.display = "flex";
-                else card.style.display = "none";
+                if (title.includes(input)) {
+                    card.style.display = "flex";
+                    let clonedCard = card.cloneNode(true);
+                    clonedCard.style.background = "#fff";
+                    clonedCard.style.color = "#333";
+                    clonedCard.style.padding = "15px";
+                    clonedCard.style.borderRadius = "8px";
+                    searchResultsGrid.appendChild(clonedCard);
+                    foundCount++;
+                } else {
+                    card.style.display = "none";
+                }
             });
+
+            if (foundCount === 0) {
+                searchResultsGrid.innerHTML = `<p style="color:#fff; font-size:18px; grid-column:1/-1;">No products found matching "${input}"</p>`;
+            }
+        }
+
+        // Enter press කළ විට Keyboard eka hide වීමට සිදුකළ Function එක
+        function handleSearchSubmit(event) {
+            event.preventDefault();
+            filterProducts();
+            document.getElementById('search-input').blur(); // Keybaord Hide කරයි
         }
 
         function addToCart(title, price) {
