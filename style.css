@@ -57,6 +57,15 @@ nav a:hover, nav a.active {
     color: var(--primary-gold);
 }
 
+.menu-toggle {
+    display: none;
+    font-size: 26px;
+    background: none;
+    border: none;
+    color: var(--primary-gold);
+    cursor: pointer;
+}
+
 /* Hero Section */
 .hero {
     background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80');
@@ -168,27 +177,38 @@ footer {
     margin-top: 50px;
 }
 
-/* Mobile Responsive Layout Fixes */
+/* Mobile Responsive Toggle Navigation */
 @media (max-width: 768px) {
     header {
-        flex-direction: column;
-        padding: 15px;
-        text-align: center;
+        padding: 15px 20px;
+    }
+
+    .menu-toggle {
+        display: block;
     }
 
     nav {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 65px;
+        left: 0;
+        background: #ffffff;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        padding: 15px 0;
+        gap: 0;
+        text-align: center;
+    }
+
+    nav.show {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-        margin-top: 12px;
     }
 
     nav a {
-        font-size: 13px;
-        padding: 6px 12px;
-        background: #f4f4f4;
-        border-radius: 20px;
+        padding: 12px;
+        border-bottom: 1px solid #eee;
+        display: block;
     }
 
     .hero h1 {

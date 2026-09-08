@@ -5,73 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mihinadee Motors | Home</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
-    <!-- Header / Navigation -->
     <header>
-        <div class="logo">Mihinadee <span>Motors</span></div>
-        <nav>
+        <div class="logo">MIHINADEE <span>MOTORS</span></div>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <nav id="nav-menu">
             <a href="index.html" class="active">Home</a>
             <a href="services.html">Services</a>
             <a href="products.html">Products</a>
-            <a href="gallery.html">Projects</a>
+            <a href="projects.html">Projects</a>
             <a href="contact.html">Contact</a>
         </nav>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
         <h1>Precision <span>Repair</span> & Luxury <span>Modification</span></h1>
         <p>Your vehicle deserves elite care. From advanced engine tuning to custom body styling, we bring high performance and supreme luxury to your ride.</p>
         <a href="contact.html" class="btn-gold">Schedule Service</a>
     </section>
 
-    <!-- Featured Products Showcase Section -->
-    <section class="container">
+    <div class="container">
         <h2 class="section-title">Featured <span>Products & Parts</span></h2>
-        
-        <!-- Dynamic Products Display Grid -->
-        <div class="grid" id="home-products-grid">
-            <!-- Dynamic items will load here via JavaScript -->
-        </div>
-    </section>
+        <div class="grid" id="home-products-grid"></div>
+    </div>
 
-    <!-- Admin Panel: Add New Product directly from Web Page -->
-    <section class="container" style="background-color: #fafafa; border-radius: 8px; margin-bottom: 40px; border: 1px dashed var(--primary-gold);">
-        <h2 class="section-title" style="margin-bottom: 10px;">Add New <span>Product (Admin Only)</span></h2>
-        <p style="text-align: center; color: #666; margin-bottom: 20px;">Use this form to add new products with uploaded images from your device.</p>
+    <div class="container" style="background: #f9f9f9; padding: 30px; border-radius: 8px; margin-top: 40px;">
+        <h2 class="section-title" style="font-size: 24px;">Add New Product <span>(Admin Only)</span></h2>
+        <p style="text-align: center; margin-bottom: 20px; color: #666;">Use this form to add new products with uploaded images from your device.</p>
         
         <form id="add-product-form" onsubmit="saveProduct(event)">
             <input type="text" id="p-title" placeholder="Product Title (e.g. LED Headlight Kit)" required>
             <input type="text" id="p-price" placeholder="Price (e.g. Rs. 18,500)" required>
             <input type="text" id="p-time" placeholder="Installation Time (e.g. 1 - 2 Hours)" required>
-            
-            <!-- File Input for Image Browsing -->
-            <label style="display: block; margin-top: 10px; font-weight: bold; color: #333;">Select Product Image From Device:</label>
-            <input type="file" id="p-file" accept="image/*" style="padding: 10px; background: #fff; border: 1px solid #ccc; width: 100%; border-radius: 4px; margin-bottom: 15px;" required>
-            
+            <label style="display: block; margin-bottom: 8px; font-weight: bold;">Select Product Image From Device:</label>
+            <input type="file" id="p-file" accept="image/*" required>
             <button type="submit" class="btn-gold" style="width: 100%; margin-top: 10px;">+ Add Product To Website</button>
         </form>
-    </section>
+    </div>
 
-    <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/94752541337?text=Hello%20Mihinadee%20Motors,%20I%20want%20to%20inquire%20about%20a%20service." target="_blank" class="whatsapp-float">
+    <a href="https://wa.me/94752541337?text=Hello%20Mihinadee%20Motors%2C%20I%20want%20to%20inquire%20about%20a%20service." class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
-        <p>
-            Mobile & WhatsApp: <a href="tel:+94752541337" style="color:var(--primary-gold); text-decoration:none;">075 254 1337</a> | 
-            Landline: <a href="tel:+9452541334" style="color:var(--primary-gold); text-decoration:none;">052 541 334</a>
-        </p>
+        <p style="font-size: 14px; color: #888; margin-top: 5px;">Mobile & WhatsApp: 075 254 1337 | Landline: 052 541 334</p>
     </footer>
 
-    <!-- Dynamic Products JavaScript Engine -->
     <script>
+        function toggleMenu() {
+            document.getElementById('nav-menu').classList.toggle('show');
+        }
+
         const defaultProducts = [
             {
                 title: "Custom LED Headlight Kit",
@@ -84,23 +72,11 @@
                 price: "Rs. 65,000",
                 time: "1 Full Day",
                 img: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                title: "Performance Alloy Wheels (Set)",
-                price: "Rs. 145,000",
-                time: "2 - 3 Hours",
-                img: "https://images.unsplash.com/photo-1580273916550-e323be2ae537?auto=format&fit=crop&w=500&q=80"
             }
         ];
 
-        // Load products
         function loadProducts() {
-            let storedProducts = JSON.parse(localStorage.getItem('mm_products'));
-            if (!storedProducts || storedProducts.length === 0) {
-                storedProducts = defaultProducts;
-                localStorage.setItem('mm_products', JSON.stringify(defaultProducts));
-            }
-
+            let storedProducts = JSON.parse(localStorage.getItem('mm_products')) || defaultProducts;
             const grid = document.getElementById('home-products-grid');
             grid.innerHTML = '';
 
@@ -109,54 +85,57 @@
                     <div class="card" style="text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
                             <img src="${prod.img}" alt="${prod.title}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 5px; margin-bottom: 15px;" onerror="this.src='https://via.placeholder.com/300x180?text=No+Image';">
-                            <h3 style="margin-bottom: 8px;">${prod.title}</h3>
-                            <p style="color: var(--primary-gold); font-weight: bold; font-size: 18px; margin: 5px 0;">${prod.price}</p>
-                            <p style="color: #666; font-size: 14px; margin-bottom: 15px;"><strong>Fitting Time:</strong> ${prod.time}</p>
+                            <h3>${prod.title}</h3>
+                            <p style="color: var(--primary-gold); font-weight: bold; font-size: 18px;">${prod.price}</p>
+                            <p style="color: #666; font-size: 14px;"><strong>Fitting Time:</strong> ${prod.time}</p>
                         </div>
                         <div>
-                            <a href="products.html" class="btn-gold" style="width: 80%; text-align: center; margin-bottom: 10px;">Order & Book</a>
+                            <a href="products.html" class="btn-gold" style="width: 80%; text-align: center; margin-top: 10px;">Order & Book</a>
                             <br>
-                            <button onclick="removeProduct(${index})" style="background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 12px; text-decoration: underline; margin-top: 5px;">Delete Item</button>
+                            <button onclick="removeProduct(${index})" style="background: none; border: none; color: #ff4d4d; cursor: pointer; font-size: 12px; margin-top: 8px;">Delete Item</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        // Save Product with Local Storage Image Upload
         function saveProduct(e) {
             e.preventDefault();
+            const pass = prompt("Enter Admin Password to Add Product:");
+            if (pass !== "mihinadee123") {
+                alert("Incorrect Password! Access Denied.");
+                return;
+            }
+
             const title = document.getElementById('p-title').value;
             const price = document.getElementById('p-price').value;
             const time = document.getElementById('p-time').value;
-            const fileInput = document.getElementById('p-file');
-            const file = fileInput.files[0];
+            const file = document.getElementById('p-file').files[0];
 
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    const imgBase64 = e.target.result; // Convert image to Base64 data URL
-
                     let storedProducts = JSON.parse(localStorage.getItem('mm_products')) || defaultProducts;
-                    storedProducts.push({ title, price, time, img: imgBase64 });
-
+                    storedProducts.push({ title, price, time, img: e.target.result });
                     localStorage.setItem('mm_products', JSON.stringify(storedProducts));
                     
                     document.getElementById('add-product-form').reset();
-                    alert('Product with image successfully uploaded!');
+                    alert('Product successfully added!');
                     loadProducts();
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        // Remove Product
         function removeProduct(index) {
-            if (confirm("Are you sure you want to delete this product?")) {
+            const pass = prompt("Enter Admin Password to Delete Product:");
+            if (pass === "mihinadee123") {
                 let storedProducts = JSON.parse(localStorage.getItem('mm_products')) || defaultProducts;
                 storedProducts.splice(index, 1);
                 localStorage.setItem('mm_products', JSON.stringify(storedProducts));
                 loadProducts();
+            } else {
+                alert("Incorrect Password!");
             }
         }
 
@@ -164,3 +143,4 @@
     </script>
 </body>
 </html>
+    
