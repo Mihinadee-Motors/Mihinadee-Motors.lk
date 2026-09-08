@@ -18,10 +18,11 @@
         .search-container {
             max-width: 600px;
             margin: 0 auto;
+            position: relative;
         }
         .search-input {
             width: 100%;
-            padding: 12px 22px;
+            padding: 12px 45px 12px 22px;
             border: 2px solid #D4AF37;
             border-radius: 30px;
             font-size: 16px;
@@ -30,6 +31,23 @@
             background-color: #ffffff;
             color: #333333;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        /* Clear/Back Button inside Search Bar */
+        .clear-search-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: #888;
+            cursor: pointer;
+            display: none;
+            padding: 5px;
+        }
+        .clear-search-btn:hover {
+            color: #d9534f;
         }
         .search-results-hero {
             display: none;
@@ -99,11 +117,12 @@
         </nav>
     </header>
 
-    <!-- Top Search Bar -->
+    <!-- Top Search Bar with Clear Button -->
     <div class="top-search-wrapper">
         <div class="search-container">
             <form onsubmit="handleSearchSubmit(event)">
-                <input type="search" id="search-input" class="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)...">
+                <input type="text" id="search-input" class="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)...">
+                <button type="button" id="clear-btn" class="clear-search-btn" onclick="clearSearch()"><i class="fas fa-times"></i></button>
             </form>
         </div>
     </div>
@@ -198,12 +217,14 @@
 
         function filterProducts() {
             const inputField = document.getElementById('search-input');
+            const clearBtn = document.getElementById('clear-btn');
             const input = inputField.value.toLowerCase().trim();
             const defaultHero = document.getElementById('default-hero-content');
             const searchResultsGrid = document.getElementById('search-results-grid');
             const cards = document.querySelectorAll('#home-products-grid .card');
 
             if (input === "") {
+                clearBtn.style.display = "none";
                 defaultHero.style.display = "block";
                 searchResultsGrid.style.display = "none";
                 searchResultsGrid.innerHTML = "";
@@ -211,6 +232,7 @@
                 return;
             }
 
+            clearBtn.style.display = "block";
             defaultHero.style.display = "none";
             searchResultsGrid.style.display = "grid";
             searchResultsGrid.innerHTML = "";
@@ -237,11 +259,18 @@
             }
         }
 
-        // Enter press කළ විට Keyboard eka hide වීමට සිදුකළ Function එක
+        // Search Input Clear කිරීම සහ Reset කිරීම
+        function clearSearch() {
+            const inputField = document.getElementById('search-input');
+            inputField.value = "";
+            filterProducts();
+            inputField.blur();
+        }
+
         function handleSearchSubmit(event) {
             event.preventDefault();
             filterProducts();
-            document.getElementById('search-input').blur(); // Keybaord Hide කරයි
+            document.getElementById('search-input').blur();
         }
 
         function addToCart(title, price) {
