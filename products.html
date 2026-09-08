@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mihinadee Motors | Products & Booking</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <header>
+        <div class="logo">Mihinadee <span>Motors</span></div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="products.html" class="active">Products</a>
+            <a href="gallery.html">Projects</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <section class="container">
+        <h2 class="section-title">Store & <span>Installation Booking</span></h2>
+
+        <!-- Products List -->
+        <div class="grid">
+            
+            <div class="card product-card">
+                <h3>Custom LED Headlight Kit</h3>
+                <p class="price">Rs. 18,500</p>
+                <p><strong>Est. Installation Time:</strong> 1 - 2 Hours</p>
+                <button class="btn-gold" onclick="addToCart('Custom LED Headlight Kit', '18,500', '1 - 2 Hours')">Add to Cart</button>
+            </div>
+
+            <div class="card product-card">
+                <h3>Universal Sports Bodykit</h3>
+                <p class="price">Rs. 65,000</p>
+                <p><strong>Est. Installation Time:</strong> 1 Full Day</p>
+                <button class="btn-gold" onclick="addToCart('Universal Sports Bodykit', '65,000', '1 Full Day')">Add to Cart</button>
+            </div>
+
+            <div class="card product-card">
+                <h3>Performance Alloy Wheels (Set of 4)</h3>
+                <p class="price">Rs. 145,000</p>
+                <p><strong>Est. Installation Time:</strong> 2 - 3 Hours</p>
+                <button class="btn-gold" onclick="addToCart('Performance Alloy Wheels', '145,000', '2 - 3 Hours')">Add to Cart</button>
+            </div>
+
+        </div>
+
+        <!-- Selected Cart & Appointment Section -->
+        <div style="margin-top: 50px;" class="card">
+            <h2 class="section-title" style="margin-bottom:20px;">Your <span>Selected Items & Appointment</span></h2>
+            
+            <div id="cart-details" style="padding: 15px; background: #fafafa; border-radius: 5px; margin-bottom: 20px;">
+                <p>No items added yet. Click "Add to Cart" above.</p>
+            </div>
+
+            <form id="booking-form" onsubmit="sendWhatsAppOrder(event)">
+                <input type="text" id="cust-name" placeholder="Your Full Name" required>
+                <input type="tel" id="cust-phone" placeholder="Phone Number" required>
+                <input type="text" id="cust-vehicle" placeholder="Vehicle Model & Year (e.g. Civic 2018)" required>
+                
+                <label style="display:block; margin-top:10px; font-weight:bold;">Preferred Installation Date:</label>
+                <input type="date" id="cust-date" required>
+
+                <label style="display:block; margin-top:10px; font-weight:bold;">Preferred Time Slot:</label>
+                <select id="cust-time" required>
+                    <option value="" disabled selected>Select Arrival Time Slot</option>
+                    <option value="Morning Slot (9:00 AM - 12:00 PM)">Morning Slot (9:00 AM - 12:00 PM)</option>
+                    <option value="Afternoon Slot (1:00 PM - 4:00 PM)">Afternoon Slot (1:00 PM - 4:00 PM)</option>
+                </select>
+
+                <button type="submit" class="btn-gold" style="margin-top:15px; width:100%;">Book & Order via WhatsApp</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Floating WhatsApp Button -->
+    <a href="https://wa.me/94752541337" target="_blank" class="whatsapp-float">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <footer>
+        <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
+    </footer>
+
+    <!-- JavaScript for Cart & WhatsApp Direct Ordering -->
+    <script>
+        let selectedProduct = null;
+
+        function addToCart(name, price, time) {
+            selectedProduct = { name, price, time };
+            document.getElementById('cart-details').innerHTML = `
+                <h4 style="color:#D4AF37; margin:0;">Item: ${name}</h4>
+                <p style="margin:5px 0;"><strong>Price:</strong> Rs. ${price}</p>
+                <p style="margin:5px 0; color:#555;"><strong>Required Installation Time:</strong> ${time}</p>
+            `;
+            alert(name + " added to your booking cart!");
+        }
+
+        function sendWhatsAppOrder(e) {
+            e.preventDefault();
+            if(!selectedProduct) {
+                alert("Please add a product to the cart first!");
+                return;
+            }
+
+            let name = document.getElementById('cust-name').value;
+            let phone = document.getElementById('cust-phone').value;
+            let vehicle = document.getElementById('cust-vehicle').value;
+            let date = document.getElementById('cust-date').value;
+            let time = document.getElementById('cust-time').value;
+
+            let message = `Hello Mihinadee Motors,%0A%0AI want to order a product and book an installation appointment:%0A%0A` +
+                `*Product:* ${selectedProduct.name}%0A` +
+                `*Price:* Rs. ${selectedProduct.price}%0A` +
+                `*Est. Fitting Time:* ${selectedProduct.time}%0A%0A` +
+                `*Customer Details:*%0A` +
+                `- Name: ${name}%0A` +
+                `- Phone: ${phone}%0A` +
+                `- Vehicle: ${vehicle}%0A` +
+                `- Preferred Date: ${date}%0A` +
+                `- Time Slot: ${time}`;
+
+            window.open(`https://wa.me/94752541337?text=${message}`, '_blank');
+        }
+    </script>
+</body>
+</html>
