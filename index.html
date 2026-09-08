@@ -10,6 +10,23 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
+        .search-container {
+            position: relative;
+            z-index: 100;
+            max-width: 500px;
+            margin: 20px auto 30px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 12px 20px;
+            border: 2px solid #D4AF37;
+            border-radius: 25px;
+            font-size: 16px;
+            outline: none;
+            box-sizing: border-box;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
         .cart-float {
             position: fixed;
             bottom: 90px;
@@ -80,8 +97,8 @@
         <h2 class="section-title" style="text-align: center;">Featured <span>Products & Parts</span></h2>
         
         <!-- Live Search Bar -->
-        <div style="max-width: 500px; margin: 20px auto 30px;">
-            <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)..." style="width:100%; padding:12px 20px; border:2px solid #D4AF37; border-radius:25px; font-size:16px; outline:none; box-sizing:border-box;">
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)...">
         </div>
 
         <div class="grid" id="home-products-grid"></div>
@@ -93,7 +110,7 @@
         <span class="cart-count" id="cart-count">0</span>
     </div>
 
-    <a href="https://wa.me/94752541337" class="whatsapp-float" target="_blank">
+    <a href="https://api.whatsapp.com/send/?phone=94752541337" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -103,8 +120,10 @@
             <span onclick="closeCartModal()" style="float:right; cursor:pointer; font-weight:bold; font-size:20px;">&times;</span>
             <h3 style="text-align:center;">Your Shopping Cart</h3>
             <div id="cart-items-container" style="margin: 20px 0;"></div>
-            <p style="text-align:right; font-weight:bold;">Total: <span id="cart-total-price">Rs. 0</span></p>
-            <button onclick="checkoutCart()" class="btn-gold" style="width:100%; margin-top:10px; cursor:pointer;">Order All via WhatsApp</button>
+            <div style="text-align:right; font-size:18px; font-weight:bold; margin-bottom:15px; border-top:2px solid #eee; padding-top:10px;">
+                Total: <span id="cart-total-price" style="color:#D4AF37;">Rs. 0.00</span>
+            </div>
+            <button onclick="checkoutCart()" class="btn-gold" style="width:100%; cursor:pointer;">Order All via WhatsApp</button>
         </div>
     </div>
 
@@ -176,6 +195,15 @@
             document.getElementById('cart-count').innerText = cart.length;
         }
 
+        function calculateTotal() {
+            let total = 0;
+            cart.forEach(item => {
+                let numericPrice = parseFloat(item.price.toString().replace(/[^0-9.]/g, '')) || 0;
+                total += numericPrice;
+            });
+            return total.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
         function openCartModal() {
             const container = document.getElementById('cart-items-container');
             container.innerHTML = '';
@@ -191,6 +219,7 @@
                     `;
                 });
             }
+            document.getElementById('cart-total-price').innerText = 'Rs. ' + calculateTotal();
             document.getElementById('cartModal').style.display = 'block';
         }
 
@@ -214,7 +243,8 @@
             cart.forEach((item, i) => {
                 msg += `${i + 1}. ${item.title} (${item.price})%0A`;
             });
-            window.open(`https://wa.me/94752541337?text=${msg}`, '_blank');
+            msg += `%0A*Total Price:* Rs. ${calculateTotal()}`;
+            window.open(`https://api.whatsapp.com/send/?phone=94752541337&text=${msg}`, '_blank');
         }
     </script>
 </body>
