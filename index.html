@@ -9,6 +9,52 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        .cart-float {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background-color: #D4AF37;
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 7px;
+            border-radius: 50%;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 8px;
+            border-top: 5px solid #D4AF37;
+        }
+    </style>
 </head>
 <body>
 
@@ -30,14 +76,37 @@
         <a href="contact.html" class="btn-gold">Schedule Service</a>
     </section>
 
-    <div class="container">
-        <h2 class="section-title">Featured <span>Products & Parts</span></h2>
+    <div class="container" style="max-width: 1100px; margin: 40px auto; padding: 0 20px;">
+        <h2 class="section-title" style="text-align: center;">Featured <span>Products & Parts</span></h2>
+        
+        <!-- Live Search Bar -->
+        <div style="max-width: 500px; margin: 20px auto 30px;">
+            <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)..." style="width:100%; padding:12px 20px; border:2px solid #D4AF37; border-radius:25px; font-size:16px; outline:none; box-sizing:border-box;">
+        </div>
+
         <div class="grid" id="home-products-grid"></div>
+    </div>
+
+    <!-- Floating Cart Icon above WhatsApp Icon -->
+    <div class="cart-float" onclick="openCartModal()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cart-count">0</span>
     </div>
 
     <a href="https://wa.me/94752541337" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeCartModal()" style="float:right; cursor:pointer; font-weight:bold; font-size:20px;">&times;</span>
+            <h3 style="text-align:center;">Your Shopping Cart</h3>
+            <div id="cart-items-container" style="margin: 20px 0;"></div>
+            <p style="text-align:right; font-weight:bold;">Total: <span id="cart-total-price">Rs. 0</span></p>
+            <button onclick="checkoutCart()" class="btn-gold" style="width:100%; margin-top:10px; cursor:pointer;">Order All via WhatsApp</button>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
@@ -49,14 +118,15 @@
             document.getElementById('nav-menu').classList.toggle('show');
         }
 
-        // Firebase Configuration (Using your Firebase URL)
         const firebaseConfig = {
             databaseURL: "https://mihindee-motors-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Load Products Live from Firebase
+        let cart = JSON.parse(localStorage.getItem('mihinadee_cart')) || [];
+        updateCartCount();
+
         db.ref('products').on('value', (snapshot) => {
             const grid = document.getElementById('home-products-grid');
             grid.innerHTML = '';
@@ -78,13 +148,74 @@
                             <p style="color: #666; font-size: 14px;"><strong>Fitting Time:</strong> ${prod.time}</p>
                         </div>
                         <div>
-                            <a href="products.html" class="btn-gold" style="width: 80%; text-align: center; margin-top: 10px;">Order & Book</a>
+                            <button onclick="addToCart('${prod.title}', '${prod.price}')" class="btn-gold" style="width: 80%; margin-top: 10px; cursor:pointer;">+ Add to Cart</button>
                         </div>
                     </div>
                 `;
             }
         });
+
+        function filterProducts() {
+            const input = document.getElementById('search-input').value.toLowerCase();
+            const cards = document.querySelectorAll('#home-products-grid .card');
+            cards.forEach(card => {
+                const title = card.querySelector('h3').innerText.toLowerCase();
+                if (title.includes(input)) card.style.display = "flex";
+                else card.style.display = "none";
+            });
+        }
+
+        function addToCart(title, price) {
+            cart.push({ title, price });
+            localStorage.setItem('mihinadee_cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(title + " added to Cart!");
+        }
+
+        function updateCartCount() {
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        function openCartModal() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center;">Your cart is empty.</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    container.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
+                            <span>${item.title} - <strong>${item.price}</strong></span>
+                            <button onclick="removeFromCart(${index})" style="background:red; color:white; border:none; border-radius:3px; padding:3px 8px; cursor:pointer;">X</button>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('cartModal').style.display = 'block';
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('mihinadee_cart', JSON.stringify(cart));
+            updateCartCount();
+            openCartModal();
+        }
+
+        function checkoutCart() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            let msg = "Hello Mihinadee Motors,%0A%0AI would like to order items from my cart:%0A";
+            cart.forEach((item, i) => {
+                msg += `${i + 1}. ${item.title} (${item.price})%0A`;
+            });
+            window.open(`https://wa.me/94752541337?text=${msg}`, '_blank');
+        }
     </script>
 </body>
 </html>
-    

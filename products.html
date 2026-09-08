@@ -9,6 +9,52 @@
     <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    <style>
+        .cart-float {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            background-color: #D4AF37;
+            color: white;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            cursor: pointer;
+            z-index: 1000;
+        }
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 7px;
+            border-radius: 50%;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0; top: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 8px;
+            border-top: 5px solid #D4AF37;
+        }
+    </style>
 </head>
 <body>
 
@@ -32,10 +78,9 @@
             <input type="text" id="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)..." style="width:100%; padding:12px 20px; border:2px solid #D4AF37; border-radius:25px; font-size:16px; outline:none; box-sizing:border-box;">
         </div>
 
-        <!-- Dynamic Products List from Firebase -->
         <div class="grid" id="products-grid"></div>
 
-        <!-- Selected Product Order Form -->
+        <!-- Order / Appointment Form (No Birthday Input) -->
         <div id="booking-section" style="max-width: 600px; margin: 50px auto 0; padding: 25px; background: #fff; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-top: 5px solid #D4AF37; display: none;">
             <h3 style="text-align: center; margin-bottom: 15px;">Book Appointment & Order</h3>
             <p id="selected-item-info" style="text-align: center; font-weight: bold; color: #D4AF37; margin-bottom: 20px;"></p>
@@ -45,6 +90,7 @@
                 <input type="text" id="cust-name" placeholder="Your Full Name *" required style="width:100%; padding:10px; margin-bottom:10px; box-sizing:border-box;">
                 <input type="text" id="cust-phone" placeholder="Phone Number *" required style="width:100%; padding:10px; margin-bottom:10px; box-sizing:border-box;">
                 <input type="text" id="cust-vehicle" placeholder="Vehicle Model & Year (e.g. Civic 2018) *" required style="width:100%; padding:10px; margin-bottom:10px; box-sizing:border-box;">
+                <label style="font-size:13px; color:#555;">Booking Date:</label>
                 <input type="date" id="cust-date" required style="width:100%; padding:10px; margin-bottom:10px; box-sizing:border-box;">
                 <select id="cust-time" required style="width:100%; padding:10px; margin-bottom:15px; box-sizing:border-box;">
                     <option value="">Select Arrival Time Slot</option>
@@ -56,9 +102,25 @@
         </div>
     </div>
 
+    <!-- Floating Cart Icon above WhatsApp Icon -->
+    <div class="cart-float" onclick="openCartModal()">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-count" id="cart-count">0</span>
+    </div>
+
     <a href="https://wa.me/94752541337" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
+
+    <!-- Cart Modal -->
+    <div id="cartModal" class="modal">
+        <div class="modal-content">
+            <span onclick="closeCartModal()" style="float:right; cursor:pointer; font-weight:bold; font-size:20px;">&times;</span>
+            <h3 style="text-align:center;">Your Shopping Cart</h3>
+            <div id="cart-items-container" style="margin: 20px 0;"></div>
+            <button onclick="checkoutCart()" class="btn-gold" style="width:100%; margin-top:10px; cursor:pointer;">Order All via WhatsApp</button>
+        </div>
+    </div>
 
     <footer>
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
@@ -70,14 +132,15 @@
             document.getElementById('nav-menu').classList.toggle('show');
         }
 
-        // Firebase Configuration
         const firebaseConfig = {
             databaseURL: "https://mihindee-motors-default-rtdb.asia-southeast1.firebasedatabase.app/"
         };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        // Load Products Live from Database
+        let cart = JSON.parse(localStorage.getItem('mihinadee_cart')) || [];
+        updateCartCount();
+
         db.ref('products').on('value', (snapshot) => {
             const grid = document.getElementById('products-grid');
             grid.innerHTML = '';
@@ -98,30 +161,25 @@
                             <p style="color: #D4AF37; font-weight: bold; font-size: 18px;">${prod.price}</p>
                             <p style="color: #666; font-size: 14px;"><strong>Est. Fitting Time:</strong> ${prod.time}</p>
                         </div>
-                        <div>
-                            <button onclick="selectProduct('${prod.title}', '${prod.price}')" class="btn-gold" style="width: 80%; margin-top: 10px; cursor:pointer;">Order & Book</button>
+                        <div style="display:flex; gap:5px; margin-top:10px;">
+                            <button onclick="addToCart('${prod.title}', '${prod.price}')" class="btn-gold" style="flex:1; padding:8px 5px; font-size:12px; cursor:pointer;">+ Cart</button>
+                            <button onclick="selectProduct('${prod.title}', '${prod.price}')" class="btn-gold" style="flex:1; padding:8px 5px; font-size:12px; cursor:pointer;">Order Now</button>
                         </div>
                     </div>
                 `;
             }
         });
 
-        // Search Filter Functionality
         function filterProducts() {
             const input = document.getElementById('search-input').value.toLowerCase();
             const cards = document.querySelectorAll('#products-grid .card');
-
             cards.forEach(card => {
                 const title = card.querySelector('h3').innerText.toLowerCase();
-                if (title.includes(input)) {
-                    card.style.display = "flex";
-                } else {
-                    card.style.display = "none";
-                }
+                if (title.includes(input)) card.style.display = "flex";
+                else card.style.display = "none";
             });
         }
 
-        // Select Product for Booking
         function selectProduct(name, price) {
             document.getElementById('booking-section').style.display = 'block';
             document.getElementById('order-product-name').value = name;
@@ -129,7 +187,6 @@
             document.getElementById('booking-section').scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Send Order details directly to WhatsApp
         function sendToWhatsApp(e) {
             e.preventDefault();
             const product = document.getElementById('order-product-name').value;
@@ -139,11 +196,60 @@
             const date = document.getElementById('cust-date').value;
             const time = document.getElementById('cust-time').value;
             
-            const myNumber = "94752541337"; // Mihinadee Motors WhatsApp Number
-            
-            const msg = `Hello Mihinadee Motors,%0A%0AI would like to place an order & booking:%0A*Product:* ${product}%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Vehicle:* ${vehicle}%0A*Date:* ${date}%0A*Time Slot:* ${time}`;
-            
-            window.open(`https://wa.me/${myNumber}?text=${msg}`, '_blank');
+            const msg = `Hello Mihinadee Motors,%0A%0AI would like to place an order & booking:%0A*Product:* ${product}%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Vehicle:* ${vehicle}%0A*Booking Date:* ${date}%0A*Time Slot:* ${time}`;
+            window.open(`https://wa.me/94752541337?text=${msg}`, '_blank');
+        }
+
+        function addToCart(title, price) {
+            cart.push({ title, price });
+            localStorage.setItem('mihinadee_cart', JSON.stringify(cart));
+            updateCartCount();
+            alert(title + " added to Cart!");
+        }
+
+        function updateCartCount() {
+            document.getElementById('cart-count').innerText = cart.length;
+        }
+
+        function openCartModal() {
+            const container = document.getElementById('cart-items-container');
+            container.innerHTML = '';
+            if (cart.length === 0) {
+                container.innerHTML = '<p style="text-align:center;">Your cart is empty.</p>';
+            } else {
+                cart.forEach((item, index) => {
+                    container.innerHTML += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; border-bottom:1px solid #eee; padding-bottom:5px;">
+                            <span>${item.title} - <strong>${item.price}</strong></span>
+                            <button onclick="removeFromCart(${index})" style="background:red; color:white; border:none; border-radius:3px; padding:3px 8px; cursor:pointer;">X</button>
+                        </div>
+                    `;
+                });
+            }
+            document.getElementById('cartModal').style.display = 'block';
+        }
+
+        function closeCartModal() {
+            document.getElementById('cartModal').style.display = 'none';
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            localStorage.setItem('mihinadee_cart', JSON.stringify(cart));
+            updateCartCount();
+            openCartModal();
+        }
+
+        function checkoutCart() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+            let msg = "Hello Mihinadee Motors,%0A%0AI would like to order items from my cart:%0A";
+            cart.forEach((item, i) => {
+                msg += `${i + 1}. ${item.title} (${item.price})%0A`;
+            });
+            window.open(`https://wa.me/94752541337?text=${msg}`, '_blank');
         }
     </script>
 </body>
