@@ -6,6 +6,9 @@
     <title>Mihinadee Motors | Home</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 </head>
 <body>
 
@@ -32,7 +35,7 @@
         <div class="grid" id="home-products-grid"></div>
     </div>
 
-    <a href="https://wa.me/94752541337?text=Hello%20Mihinadee%20Motors%2C%20I%20want%20to%20inquire%20about%20a%20service." class="whatsapp-float" target="_blank">
+    <a href="https://wa.me/94752541337" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -46,33 +49,32 @@
             document.getElementById('nav-menu').classList.toggle('show');
         }
 
-        const defaultProducts = [
-            {
-                title: "Custom LED Headlight Kit",
-                price: "Rs. 18,500",
-                time: "1 - 2 Hours",
-                img: "https://images.unsplash.com/photo-1511919884226-fd3cad34687c?auto=format&fit=crop&w=500&q=80"
-            },
-            {
-                title: "Universal Sports Bodykit",
-                price: "Rs. 65,000",
-                time: "1 Full Day",
-                img: "https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=500&q=80"
-            }
-        ];
+        // Firebase Configuration (Using your Firebase URL)
+        const firebaseConfig = {
+            databaseURL: "https://mihindee-motors-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-        function loadProducts() {
-            let storedProducts = JSON.parse(localStorage.getItem('mm_products')) || defaultProducts;
+        // Load Products Live from Firebase
+        db.ref('products').on('value', (snapshot) => {
             const grid = document.getElementById('home-products-grid');
             grid.innerHTML = '';
+            const data = snapshot.val();
+            
+            if (!data) {
+                grid.innerHTML = '<p style="text-align:center; grid-column:1/-1;">No products available at the moment.</p>';
+                return;
+            }
 
-            storedProducts.forEach((prod) => {
+            for (let id in data) {
+                let prod = data[id];
                 grid.innerHTML += `
                     <div class="card" style="text-align: center; display: flex; flex-direction: column; justify-content: space-between;">
                         <div>
                             <img src="${prod.img}" alt="${prod.title}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 5px; margin-bottom: 15px;" onerror="this.src='https://via.placeholder.com/300x180?text=No+Image';">
                             <h3>${prod.title}</h3>
-                            <p style="color: var(--primary-gold); font-weight: bold; font-size: 18px;">${prod.price}</p>
+                            <p style="color: #D4AF37; font-weight: bold; font-size: 18px;">${prod.price}</p>
                             <p style="color: #666; font-size: 14px;"><strong>Fitting Time:</strong> ${prod.time}</p>
                         </div>
                         <div>
@@ -80,10 +82,8 @@
                         </div>
                     </div>
                 `;
-            });
-        }
-
-        loadProducts();
+            }
+        });
     </script>
 </body>
 </html>

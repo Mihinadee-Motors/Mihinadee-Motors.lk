@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mihinadee Motors | Secret Admin</title>
     <link rel="stylesheet" href="style.css">
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
         .admin-card {
             max-width: 500px;
@@ -13,7 +16,7 @@
             background: #ffffff;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border-top: 5px solid var(--primary-gold, #D4AF37);
+            border-top: 5px solid #D4AF37;
         }
     </style>
 </head>
@@ -21,12 +24,10 @@
 
     <header>
         <div class="logo">MIHINADEE <span>MOTORS</span></div>
-        <nav>
-            <a href="index.html">Main Website</a>
-        </nav>
+        <nav><a href="index.html">Main Website</a></nav>
     </header>
 
-    <!-- 1. Password Box -->
+    <!-- Login Box -->
     <div id="login-box" class="admin-card" style="text-align: center;">
         <h2>Secret Admin Login</h2>
         <p style="margin: 10px 0 20px; color: #666;">Enter password to manage products</p>
@@ -34,7 +35,7 @@
         <button onclick="loginAdmin()" class="btn-gold" style="width:100%;">Login</button>
     </div>
 
-    <!-- 2. Hidden Admin Panel -->
+    <!-- Admin Panel -->
     <div id="admin-panel" style="display: none; padding: 20px;">
         <div class="admin-card">
             <h2 style="text-align: center; margin-bottom: 20px;">+ Add New Product</h2>
@@ -53,39 +54,44 @@
     </div>
 
     <script>
-        const secretPass = "mihinadee123"; // Password එක මෙතනින් වෙනස් කළ හැක
+        // Firebase Configuration (Using your Firebase URL)
+        const firebaseConfig = {
+            databaseURL: "https://mihindee-motors-default-rtdb.asia-southeast1.firebasedatabase.app/"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
         function loginAdmin() {
-            const entered = document.getElementById('pass-input').value;
-            if (entered === secretPass) {
+            if (document.getElementById('pass-input').value === "mihinadee123") {
                 document.getElementById('login-box').style.display = 'none';
                 document.getElementById('admin-panel').style.display = 'block';
-                renderAdminProducts();
+                loadAdminProducts();
             } else {
                 alert("Incorrect Password!");
             }
         }
 
-        function renderAdminProducts() {
-            const list = document.getElementById('admin-product-list');
-            let stored = JSON.parse(localStorage.getItem('mm_products')) || [];
-            list.innerHTML = '';
-
-            if (stored.length === 0) {
-                list.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">No uploaded products yet.</p>';
-                return;
-            }
-
-            stored.forEach((item, index) => {
-                list.innerHTML += `
-                    <div class="card" style="text-align:center;">
-                        <img src="${item.img}" style="width:100%; height:180px; object-fit:cover; border-radius:5px;">
-                        <h3 style="margin-top:10px;">${item.title}</h3>
-                        <p style="color:#D4AF37; font-weight:bold;">${item.price}</p>
-                        <p style="font-size:13px; color:#666;">Time: ${item.time}</p>
-                        <button onclick="deleteProduct(${index})" style="background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:4px; margin-top:10px; cursor:pointer;">Delete</button>
-                    </div>
-                `;
+        function loadAdminProducts() {
+            db.ref('products').on('value', (snapshot) => {
+                const list = document.getElementById('admin-product-list');
+                list.innerHTML = '';
+                const data = snapshot.val();
+                if (!data) {
+                    list.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">No uploaded products yet.</p>';
+                    return;
+                }
+                for (let id in data) {
+                    let item = data[id];
+                    list.innerHTML += `
+                        <div class="card" style="text-align:center;">
+                            <img src="${item.img}" style="width:100%; height:180px; object-fit:cover; border-radius:5px;">
+                            <h3 style="margin-top:10px;">${item.title}</h3>
+                            <p style="color:#D4AF37; font-weight:bold;">${item.price}</p>
+                            <p style="font-size:13px; color:#666;">Time: ${item.time}</p>
+                            <button onclick="deleteProduct('${id}')" style="background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:4px; margin-top:10px; cursor:pointer;">Delete</button>
+                        </div>
+                    `;
+                }
             });
         }
 
@@ -99,23 +105,22 @@
             if (file) {
                 const reader = new FileReader();
                 reader.onload = function(evt) {
-                    let stored = JSON.parse(localStorage.getItem('mm_products')) || [];
-                    stored.push({ title, price, time, img: evt.target.result });
-                    localStorage.setItem('mm_products', JSON.stringify(stored));
-                    
-                    alert("Product Added Successfully!");
-                    renderAdminProducts();
+                    db.ref('products').push({
+                        title: title,
+                        price: price,
+                        time: time,
+                        img: evt.target.result
+                    }).then(() => {
+                        alert("Product Added & Synced to All Devices!");
+                    });
                 };
                 reader.readAsDataURL(file);
             }
         }
 
-        function deleteProduct(index) {
+        function deleteProduct(id) {
             if (confirm("Delete this product?")) {
-                let stored = JSON.parse(localStorage.getItem('mm_products')) || [];
-                stored.splice(index, 1);
-                localStorage.setItem('mm_products', JSON.stringify(stored));
-                renderAdminProducts();
+                db.ref('products/' + id).remove();
             }
         }
     </script>
