@@ -10,22 +10,26 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
     <style>
+        .top-search-wrapper {
+            background-color: #111111;
+            padding: 15px 20px;
+            border-bottom: 2px solid #D4AF37;
+        }
         .search-container {
-            max-width: 500px;
-            margin: 0 auto 30px auto;
-            position: relative;
-            z-index: 10;
+            max-width: 600px;
+            margin: 0 auto;
         }
         .search-input {
             width: 100%;
-            padding: 14px 22px;
+            padding: 12px 22px;
             border: 2px solid #D4AF37;
             border-radius: 30px;
             font-size: 16px;
             outline: none;
             box-sizing: border-box;
             background-color: #ffffff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+            color: #333333;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
         .cart-float {
             position: fixed;
@@ -87,6 +91,13 @@
         </nav>
     </header>
 
+    <!-- Top Search Bar (Header එකට පහළින් උඩින්ම පිහිටයි) -->
+    <div class="top-search-wrapper">
+        <div class="search-container">
+            <input type="text" id="search-input" class="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)...">
+        </div>
+    </div>
+
     <section class="hero">
         <h1>Precision <span>Repair</span> & Luxury <span>Modification</span></h1>
         <p>Your vehicle deserves elite care. From advanced engine tuning to custom body styling, we bring high performance and supreme luxury to your ride.</p>
@@ -94,13 +105,7 @@
     </section>
 
     <div class="container" style="max-width: 1100px; margin: 30px auto; padding: 0 20px;">
-        <!-- Live Search Bar -->
-        <div class="search-container">
-            <input type="text" id="search-input" class="search-input" onkeyup="filterProducts()" placeholder="🔍 Search products (e.g. LED, Alloy, Bodykit)...">
-        </div>
-
         <h2 class="section-title" style="text-align: center;">Featured <span>Products & Parts</span></h2>
-
         <div class="grid" id="home-products-grid"></div>
     </div>
 
@@ -110,7 +115,7 @@
         <span class="cart-count" id="cart-count">0</span>
     </div>
 
-    <a href="https://api.whatsapp.com/send/?phone=94752541337&text=Hello+Mihinadee+Motors%2C%0A%0AI+would+like+to+place+an+order+&type=phone_number&app_absent=0" class="whatsapp-float" target="_blank">
+    <a href="https://api.whatsapp.com/send/?phone=94752541337" class="whatsapp-float" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
 
