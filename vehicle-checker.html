@@ -41,6 +41,10 @@
             box-sizing: border-box;
         }
 
+        .form-control:focus {
+            border-color: #d4af37;
+        }
+
         .section-subtitle {
             color: #d4af37;
             font-size: 1rem;
@@ -67,7 +71,7 @@
             align-items: center;
             gap: 10px;
             transition: all 0.2s ease;
-            color: #fff;
+            color: #ffffff;
             font-size: 0.9rem;
         }
 
@@ -184,20 +188,30 @@
     </header>
 
     <main class="container">
-        <h2 style="color: #d4af37; text-align: center; margin-top: 20px;">AI Vehicle Specs & Multi-Service Calculator</h2>
-        <p style="color: #cccccc; text-align: center; font-size: 0.9rem; margin-bottom: 20px;">Select your vehicle and choose required tinting & car care services to get instant estimated total.</p>
+        <h2 style="color: #d4af37; text-align: center; margin-top: 20px;">AI Vehicle Specs & Service Calculator</h2>
+        <p style="color: #cccccc; text-align: center; font-size: 0.9rem; margin-bottom: 20px;">Select or type your vehicle model and required services to get instant estimate.</p>
 
         <div class="checker-card">
-            <!-- Vehicle Selection -->
+            <!-- Searchable / Editable Vehicle Input -->
             <div class="form-group">
-                <label><i class="fas fa-car"></i> Select Vehicle Model</label>
-                <select id="vehicleModel" class="form-control" onchange="updateVehicleSpecs()">
-                    <option value="vitz">Toyota Vitz / Yaris (Hatchback)</option>
-                    <option value="prius">Toyota Prius (Sedan/Liftback)</option>
-                    <option value="alto">Suzuki Alto (Mini Hatchback)</option>
-                    <option value="vezel">Honda Vezel / HR-V (SUV)</option>
-                    <option value="sedan">Standard Sedan (Allion, Premio, Civic, etc.)</option>
-                </select>
+                <label><i class="fas fa-car"></i> Select or Type Vehicle Model</label>
+                <input list="vehicleList" id="vehicleInput" class="form-control" placeholder="Type or select e.g. Toyota KDH, Premio, Alto, Isuzu..." onchange="updateVehicleSpecs()" oninput="updateVehicleSpecs()">
+                <datalist id="vehicleList">
+                    <option value="Toyota Vitz / Yaris (Hatchback)">
+                    <option value="Suzuki Alto (Mini Hatchback)">
+                    <option value="Suzuki Wagon R (Hatchback)">
+                    <option value="Toyota Aqua (Hatchback)">
+                    <option value="Toyota Prius (Sedan)">
+                    <option value="Toyota Premio / Allion (Sedan)">
+                    <option value="Toyota Axio / Corolla (Sedan)">
+                    <option value="Honda Vezel / HR-V (SUV)">
+                    <option value="Toyota CH-R / Harrier (SUV)">
+                    <option value="Toyota HiAce KDH (Van)">
+                    <option value="Nissan Caravan NV350 (Van)">
+                    <option value="Suzuki Every / Carry (Mini Van)">
+                    <option value="Isuzu Elf (Lorry)">
+                    <option value="Mitsubishi Fuso Canter (Lorry)">
+                </datalist>
             </div>
 
             <!-- Model Year -->
@@ -206,52 +220,90 @@
                 <input type="number" id="vehicleYear" class="form-control" value="2018" placeholder="e.g. 2018" onchange="calculateTotal()">
             </div>
 
-            <!-- Vehicle Window Specs -->
+            <!-- Vehicle Specs Display -->
             <div id="specsContainer" class="specs-badge-container"></div>
 
-            <!-- Window Tinting Options -->
-            <div class="section-subtitle"><i class="fas fa-film"></i> Window Tinting Options</div>
+            <!-- 1. Lock & Winder Repair -->
+            <div class="section-subtitle"><i class="fas fa-key"></i> Lock & Winder Repair</div>
             <div class="option-grid">
                 <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optFrontDoors" onchange="calculateTotal()">
-                    <span>Front 2 Doors</span>
+                    <input type="checkbox" class="chk-option" id="optLockRepair" onchange="calculateTotal()">
+                    <span id="lblLockRepair">Vehicle Lock Repair</span>
                 </label>
                 <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optRearDoors" onchange="calculateTotal()">
-                    <span>Rear 2 Doors</span>
+                    <input type="checkbox" class="chk-option" id="optWinderRepair" onchange="calculateTotal()">
+                    <span id="lblWinderRepair">Winder Repair</span>
                 </label>
                 <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optRearGlass" onchange="calculateTotal()">
-                    <span>Rear / Dicky Windshield</span>
-                </label>
-                <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optQuarterGlass" onchange="calculateTotal()">
-                    <span>Quarter Glasses Set</span>
-                </label>
-                <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optFrontSunstrip" onchange="calculateTotal()">
-                    <span id="lblSunstrip">Front Windshield Sunstrip</span>
+                    <input type="checkbox" class="chk-option" id="optCenterLock" onchange="calculateTotal()">
+                    <span id="lblCenterLock">Center Lock Repair</span>
                 </label>
             </div>
 
-            <!-- Additional Car Care Services -->
-            <div class="section-subtitle"><i class="fas fa-concierge-bell"></i> Additional Car Care & Detailing Services</div>
+            <!-- 2. Upgrades & Security Systems -->
+            <div class="section-subtitle"><i class="fas fa-shield-alt"></i> Upgrades & Security Systems</div>
             <div class="option-grid">
                 <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optNanoCeramic" onchange="calculateTotal()">
-                    <span id="lblNano">Nano Ceramic Coating</span>
+                    <input type="checkbox" class="chk-option" id="optPowerWindow" onchange="calculateTotal()">
+                    <span id="lblPowerWindow">Manual to Power Window Conversion</span>
                 </label>
                 <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optFullWrap" onchange="calculateTotal()">
-                    <span id="lblWrap">Full Body Wrap</span>
+                    <input type="checkbox" class="chk-option" id="optAlarmSystem" onchange="calculateTotal()">
+                    <span id="lblAlarmSystem">Alarm System & Remote Setup</span>
+                </label>
+            </div>
+
+            <!-- 3. Styling & Protection -->
+            <div class="section-subtitle"><i class="fas fa-paint-brush"></i> Styling & Protection</div>
+            <div class="option-grid">
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optTintedGlass" onchange="calculateTotal()">
+                    <span id="lblTintedGlass">Tinted Glass Installation</span>
                 </label>
                 <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optInterior" onchange="calculateTotal()">
-                    <span id="lblInterior">Interior Detailing</span>
+                    <input type="checkbox" class="chk-option" id="optBodyStickers" onchange="calculateTotal()">
+                    <span id="lblBodyStickers">Body Stickers / Decals</span>
                 </label>
                 <label class="option-card">
-                    <input type="checkbox" class="chk-option" id="optHeadlight" onchange="calculateTotal()">
-                    <span id="lblHeadlight">Headlight Restoration</span>
+                    <input type="checkbox" class="chk-option" id="optHeadlightStickers" onchange="calculateTotal()">
+                    <span id="lblHeadlightStickers">Headlight Protection Stickers</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optStepBoardStickers" onchange="calculateTotal()">
+                    <span id="lblStepBoardStickers">Step Board Stickers</span>
+                </label>
+            </div>
+
+            <!-- 4. Interior & Exterior Fitting -->
+            <div class="section-subtitle"><i class="fas fa-car-side"></i> Interior & Exterior Fitting</div>
+            <div class="option-grid">
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optSeatCovers" onchange="calculateTotal()">
+                    <span id="lblSeatCovers">Seat Covers Fitting</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optDoorVisors" onchange="calculateTotal()">
+                    <span id="lblDoorVisors">Door Visors</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optChromeItems" onchange="calculateTotal()">
+                    <span id="lblChromeItems">Chrome Items Fitting</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optCarpets" onchange="calculateTotal()">
+                    <span id="lblCarpets">Carpet Sets</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optDoorHandles" onchange="calculateTotal()">
+                    <span id="lblDoorHandles">Door Handles Fitting</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optWiperBlades" onchange="calculateTotal()">
+                    <span id="lblWiperBlades">Wiper Blades Replacement</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optBadgesClips" onchange="calculateTotal()">
+                    <span id="lblBadgesClips">Badges & Clips Fitting</span>
                 </label>
             </div>
 
@@ -261,20 +313,16 @@
                     <i class="fas fa-trash-alt"></i> Clear All
                 </button>
                 <button class="btn-calc" onclick="calculateTotal()">
-                    <i class="fas fa-calculator"></i> Calculate Cost
+                    <i class="fas fa-calculator"></i> Calculate Estimate
                 </button>
             </div>
 
             <!-- Result Box -->
             <div id="resultBox" class="result-box">
-                <h3 style="color: #2ecc71; margin-top: 0;"><i class="fas fa-check-circle"></i> Service Estimation Ready!</h3>
+                <h3 style="color: #2ecc71; margin-top: 0;"><i class="fas fa-check-circle"></i> Estimation Summary</h3>
                 <p id="specsSummaryText" style="color: #ffffff; font-size: 0.9rem;"></p>
 
                 <div class="price-breakdown">
-                    <div id="tintFeetRow">
-                        <span>Total Tint Length:</span>
-                        <span id="totalFeetVal" style="color: #d4af37; font-weight: bold;">0 Linear Feet</span>
-                    </div>
                     <div class="total">
                         <span>Estimated Total:</span>
                         <span id="totalCostVal">Rs. 0</span>
@@ -310,20 +358,48 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Global Rates Store
+        // Default Prices
         window.liveServiceRates = {
-            tintPricePerFoot: 1200,
-            frontWindshieldPrice: 3500,
-            nanoCeramicPrice: 45000,
-            fullWrapPrice: 150000,
-            interiorDetailingPrice: 18000,
-            headlightPrice: 4500
+            lockRepairPrice: 2500,
+            winderRepairPrice: 3000,
+            centerLockPrice: 4500,
+            powerWindowPrice: 28000,
+            alarmSystemPrice: 12500,
+            tintedGlassPrice: 8500,
+            bodyStickersPrice: 4500,
+            headlightStickersPrice: 2500,
+            stepBoardStickersPrice: 2000,
+            seatCoversPrice: 15000,
+            doorVisorsPrice: 3500,
+            chromeItemsPrice: 4000,
+            carpetsPrice: 4500,
+            doorHandlesPrice: 2500,
+            wiperBladesPrice: 1800,
+            badgesClipsPrice: 1200
         };
 
-        // Listen for Admin Price Changes in Realtime
+        // Sync with Firebase
         onValue(ref(db, 'servicePrices'), (snapshot) => {
             if (snapshot.exists()) {
-                window.liveServiceRates = snapshot.val();
+                const data = snapshot.val();
+                window.liveServiceRates = {
+                    lockRepairPrice: Number(data.lockRepairPrice) || 2500,
+                    winderRepairPrice: Number(data.winderRepairPrice) || 3000,
+                    centerLockPrice: Number(data.centerLockPrice) || 4500,
+                    powerWindowPrice: Number(data.powerWindowPrice) || 28000,
+                    alarmSystemPrice: Number(data.alarmSystemPrice) || 12500,
+                    tintedGlassPrice: Number(data.tintedGlassPrice) || 8500,
+                    bodyStickersPrice: Number(data.bodyStickersPrice) || 4500,
+                    headlightStickersPrice: Number(data.headlightStickersPrice) || 2500,
+                    stepBoardStickersPrice: Number(data.stepBoardStickersPrice) || 2000,
+                    seatCoversPrice: Number(data.seatCoversPrice) || 15000,
+                    doorVisorsPrice: Number(data.doorVisorsPrice) || 3500,
+                    chromeItemsPrice: Number(data.chromeItemsPrice) || 4000,
+                    carpetsPrice: Number(data.carpetsPrice) || 4500,
+                    doorHandlesPrice: Number(data.doorHandlesPrice) || 2500,
+                    wiperBladesPrice: Number(data.wiperBladesPrice) || 1800,
+                    badgesClipsPrice: Number(data.badgesClipsPrice) || 1200
+                };
                 updateLabelsWithPrices();
                 if (typeof window.calculateTotal === 'function') {
                     window.calculateTotal();
@@ -333,111 +409,88 @@
 
         function updateLabelsWithPrices() {
             const r = window.liveServiceRates;
-            if (r.frontWindshieldPrice) document.getElementById('lblSunstrip').innerText = `Front Sunstrip (Rs. ${r.frontWindshieldPrice.toLocaleString()})`;
-            if (r.nanoCeramicPrice) document.getElementById('lblNano').innerText = `Nano Ceramic Coating (Rs. ${r.nanoCeramicPrice.toLocaleString()})`;
-            if (r.fullWrapPrice) document.getElementById('lblWrap').innerText = `Full Body Wrap (Rs. ${r.fullWrapPrice.toLocaleString()})`;
-            if (r.interiorDetailingPrice) document.getElementById('lblInterior').innerText = `Interior Detailing (Rs. ${r.interiorDetailingPrice.toLocaleString()})`;
-            if (r.headlightPrice) document.getElementById('lblHeadlight').innerText = `Headlight Restoration (Rs. ${r.headlightPrice.toLocaleString()})`;
+            document.getElementById('lblLockRepair').innerText = `Vehicle Lock Repair (Rs. ${r.lockRepairPrice.toLocaleString()})`;
+            document.getElementById('lblWinderRepair').innerText = `Winder Repair (Rs. ${r.winderRepairPrice.toLocaleString()})`;
+            document.getElementById('lblCenterLock').innerText = `Center Lock Repair (Rs. ${r.centerLockPrice.toLocaleString()})`;
+            document.getElementById('lblPowerWindow').innerText = `Power Windows Conversion (Rs. ${r.powerWindowPrice.toLocaleString()})`;
+            document.getElementById('lblAlarmSystem').innerText = `Alarm System & Remote (Rs. ${r.alarmSystemPrice.toLocaleString()})`;
+            document.getElementById('lblTintedGlass').innerText = `Tinted Glass (Rs. ${r.tintedGlassPrice.toLocaleString()})`;
+            document.getElementById('lblBodyStickers').innerText = `Body Stickers (Rs. ${r.bodyStickersPrice.toLocaleString()})`;
+            document.getElementById('lblHeadlightStickers').innerText = `Headlight Stickers (Rs. ${r.headlightStickersPrice.toLocaleString()})`;
+            document.getElementById('lblStepBoardStickers').innerText = `Step Board Stickers (Rs. ${r.stepBoardStickersPrice.toLocaleString()})`;
+            document.getElementById('lblSeatCovers').innerText = `Seat Covers (Rs. ${r.seatCoversPrice.toLocaleString()})`;
+            document.getElementById('lblDoorVisors').innerText = `Door Visors (Rs. ${r.doorVisorsPrice.toLocaleString()})`;
+            document.getElementById('lblChromeItems').innerText = `Chrome Items (Rs. ${r.chromeItemsPrice.toLocaleString()})`;
+            document.getElementById('lblCarpets').innerText = `Carpets (Rs. ${r.carpetsPrice.toLocaleString()})`;
+            document.getElementById('lblDoorHandles').innerText = `Door Handles (Rs. ${r.doorHandlesPrice.toLocaleString()})`;
+            document.getElementById('lblWiperBlades').innerText = `Wiper Blades (Rs. ${r.wiperBladesPrice.toLocaleString()})`;
+            document.getElementById('lblBadgesClips').innerText = `Badges & Clips (Rs. ${r.badgesClipsPrice.toLocaleString()})`;
         }
     </script>
 
     <script>
-        const vehicleGlassFeet = {
-            "vitz": { frontDoors: 3.5, rearDoors: 3.5, rearGlass: 4.5, quarterGlass: 1.5 },
-            "prius": { frontDoors: 4.0, rearDoors: 4.0, rearGlass: 5.5, quarterGlass: 2.0 },
-            "alto": { frontDoors: 3.0, rearDoors: 3.0, rearGlass: 3.5, quarterGlass: 1.0 },
-            "vezel": { frontDoors: 4.0, rearDoors: 4.0, rearGlass: 5.0, quarterGlass: 2.0 },
-            "sedan": { frontDoors: 4.0, rearDoors: 4.0, rearGlass: 5.0, quarterGlass: 1.5 }
-        };
-
         function updateVehicleSpecs() {
-            const model = document.getElementById('vehicleModel').value;
+            const vehicleVal = (document.getElementById('vehicleInput').value || "").toLowerCase();
             const specsContainer = document.getElementById('specsContainer');
 
-            let specs = vehicleGlassFeet[model];
-            specsContainer.innerHTML = `
-                <span class="spec-badge"><i class="fas fa-ruler-horizontal"></i> Front Doors: ~${specs.frontDoors} Linear Feet</span>
-                <span class="spec-badge"><i class="fas fa-ruler-horizontal"></i> Rear Doors: ~${specs.rearDoors} Linear Feet</span>
-                <span class="spec-badge"><i class="fas fa-ruler-horizontal"></i> Rear Glass: ~${specs.rearGlass} Linear Feet</span>
-                <span class="spec-badge"><i class="fas fa-ruler-horizontal"></i> Quarter Glass: ~${specs.quarterGlass} Linear Feet</span>
-            `;
+            let specType = "Standard Fitting";
+            if (vehicleVal.includes('van') || vehicleVal.includes('kdh')) specType = "Large Interior & Door Fitting";
+            else if (vehicleVal.includes('lorry') || vehicleVal.includes('elf')) specType = "Commercial Lock & Glass Fitting";
+            else if (vehicleVal.includes('suv')) specType = "SUV Accessories & Security Fitting";
+
+            specsContainer.innerHTML = `<span class="spec-badge"><i class="fas fa-tools"></i> Fitment Profile: ${specType}</span>`;
             calculateTotal();
         }
 
         window.calculateTotal = function() {
-            const modelKey = document.getElementById('vehicleModel').value;
-            const modelName = document.getElementById('vehicleModel').options[document.getElementById('vehicleModel').selectedIndex].text;
+            const vehicleName = document.getElementById('vehicleInput').value || "Vehicle";
             const year = document.getElementById('vehicleYear').value;
-
             const r = window.liveServiceRates || {};
-            const glassData = vehicleGlassFeet[modelKey];
 
-            let totalFeet = 0;
             let grandTotal = 0;
             let selectedServices = [];
 
-            // Tint calculations
-            if (document.getElementById('optFrontDoors').checked) {
-                totalFeet += glassData.frontDoors;
-                selectedServices.push("Front 2 Doors Tint");
-            }
-            if (document.getElementById('optRearDoors').checked) {
-                totalFeet += glassData.rearDoors;
-                selectedServices.push("Rear 2 Doors Tint");
-            }
-            if (document.getElementById('optRearGlass').checked) {
-                totalFeet += glassData.rearGlass;
-                selectedServices.push("Rear Windshield Tint");
-            }
-            if (document.getElementById('optQuarterGlass').checked) {
-                totalFeet += glassData.quarterGlass;
-                selectedServices.push("Quarter Glasses Tint");
-            }
+            const serviceMap = [
+                { id: 'optLockRepair', name: 'Lock Repair', price: r.lockRepairPrice || 2500 },
+                { id: 'optWinderRepair', name: 'Winder Repair', price: r.winderRepairPrice || 3000 },
+                { id: 'optCenterLock', name: 'Center Lock Repair', price: r.centerLockPrice || 4500 },
+                { id: 'optPowerWindow', name: 'Power Windows Conversion', price: r.powerWindowPrice || 28000 },
+                { id: 'optAlarmSystem', name: 'Alarm System & Remote', price: r.alarmSystemPrice || 12500 },
+                { id: 'optTintedGlass', name: 'Tinted Glass', price: r.tintedGlassPrice || 8500 },
+                { id: 'optBodyStickers', name: 'Body Stickers', price: r.bodyStickersPrice || 4500 },
+                { id: 'optHeadlightStickers', name: 'Headlight Stickers', price: r.headlightStickersPrice || 2500 },
+                { id: 'optStepBoardStickers', name: 'Step Board Stickers', price: r.stepBoardStickersPrice || 2000 },
+                { id: 'optSeatCovers', name: 'Seat Covers', price: r.seatCoversPrice || 15000 },
+                { id: 'optDoorVisors', name: 'Door Visors', price: r.doorVisorsPrice || 3500 },
+                { id: 'optChromeItems', name: 'Chrome Items', price: r.chromeItemsPrice || 4000 },
+                { id: 'optCarpets', name: 'Carpets', price: r.carpetsPrice || 4500 },
+                { id: 'optDoorHandles', name: 'Door Handles', price: r.doorHandlesPrice || 2500 },
+                { id: 'optWiperBlades', name: 'Wiper Blades', price: r.wiperBladesPrice || 1800 },
+                { id: 'optBadgesClips', name: 'Badges & Clips', price: r.badgesClipsPrice || 1200 }
+            ];
 
-            grandTotal += (totalFeet * (r.tintPricePerFoot || 1200));
-
-            // Additional fixed services
-            if (document.getElementById('optFrontSunstrip').checked) {
-                grandTotal += (r.frontWindshieldPrice || 3500);
-                selectedServices.push("Front Sunstrip");
-            }
-            if (document.getElementById('optNanoCeramic').checked) {
-                grandTotal += (r.nanoCeramicPrice || 45000);
-                selectedServices.push("Nano Ceramic Coating");
-            }
-            if (document.getElementById('optFullWrap').checked) {
-                grandTotal += (r.fullWrapPrice || 150000);
-                selectedServices.push("Full Body Wrap");
-            }
-            if (document.getElementById('optInterior').checked) {
-                grandTotal += (r.interiorDetailingPrice || 18000);
-                selectedServices.push("Interior Detailing");
-            }
-            if (document.getElementById('optHeadlight').checked) {
-                grandTotal += (r.headlightPrice || 4500);
-                selectedServices.push("Headlight Restoration");
-            }
+            serviceMap.forEach(item => {
+                const el = document.getElementById(item.id);
+                if (el && el.checked) {
+                    grandTotal += item.price;
+                    selectedServices.push(item.name);
+                }
+            });
 
             const resultBox = document.getElementById('resultBox');
             if (selectedServices.length > 0) {
-                // Add hidden labor fee of LKR 1,000 when any service is selected
-                const HIDDEN_LABOR_FEE = 1000;
-                grandTotal += HIDDEN_LABOR_FEE;
-
                 resultBox.style.display = 'block';
             } else {
                 resultBox.style.display = 'none';
                 return;
             }
 
-            document.getElementById('totalFeetVal').innerText = `${totalFeet.toFixed(1)} Linear Feet (අඩි)`;
             document.getElementById('totalCostVal').innerText = `Rs. ${grandTotal.toLocaleString('en-US')}`;
 
-            const summaryText = `${modelName} (${year}) - ${selectedServices.join(', ')}`;
+            const summaryText = `${vehicleName} (${year}) - ${selectedServices.join(', ')}`;
             document.getElementById('specsSummaryText').innerText = summaryText;
 
-            // WhatsApp Link
-            const waMsg = `Hi Mihinadee Motors, I want to book the following services:\n- Vehicle: ${modelName} (${year})\n- Selected Services: ${selectedServices.join(', ')}\n- Total Tint Feet: ${totalFeet.toFixed(1)} Feet\n- Estimated Total: Rs. ${grandTotal.toLocaleString('en-US')}`;
+            const waMsg = `Hi Mihinadee Motors, I want to book the following services:\n- Vehicle: ${vehicleName} (${year})\n- Services: ${selectedServices.join(', ')}\n- Estimated Total: Rs. ${grandTotal.toLocaleString('en-US')}`;
             document.getElementById('whatsappBtn').href = `https://api.whatsapp.com/send/?phone=94752541337&text=${encodeURIComponent(waMsg)}`;
         };
 
