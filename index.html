@@ -32,9 +32,9 @@
                 </div>
             </div>
             
-            <!-- Live Grid from Firebase -->
+            <!-- Dynamic Realtime Products Grid -->
             <div id="liveProductGrid" class="product-grid-2col">
-                <p style="grid-column: span 2; text-align:center; color: var(--text-muted);">Loading products from database...</p>
+                <p style="grid-column: span 2; text-align:center; color: var(--text-muted);">Loading products...</p>
             </div>
         </section>
     </main>
@@ -49,18 +49,18 @@
         import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDummyKeyReplaceThisWithYourOwnKey", 
+            authDomain: "mihindee-motors.firebaseapp.com",
+            projectId: "mihindee-motors",
+            storageBucket: "mihindee-motors.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abc123def456"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // Fetch Live Products from Firestore Realtime
+        // Fetch Live Products from Firestore
         onSnapshot(collection(db, "products"), (snapshot) => {
             const grid = document.getElementById('liveProductGrid');
             grid.innerHTML = '';
