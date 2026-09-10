@@ -166,7 +166,6 @@
                 </div>
             </div>
             
-            <!-- File Browse (Multiple Images) -->
             <div class="form-group">
                 <label><i class="fas fa-images"></i> Select Images (Select up to 10+ images)</label>
                 <input type="file" id="prodImages" class="form-control" accept="image/*" multiple required>
@@ -192,8 +191,7 @@
     <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+        import { getDatabase, ref, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBzyvbPzwrbO_-S1q0kQC1BIIcWONSiCFE",
@@ -207,59 +205,62 @@
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
-        const storage = getStorage(app);
 
-        // Preview Selected Local Images
         const fileInput = document.getElementById('prodImages');
         const previewContainer = document.getElementById('previewContainer');
+        let selectedBase64Images = [];
 
+        // Preview & Convert Images to Base64 Data
         fileInput.addEventListener('change', () => {
             previewContainer.innerHTML = '';
+            selectedBase64Images = [];
             const files = Array.from(fileInput.files);
+
             files.forEach(file => {
                 const reader = new FileReader();
                 reader.onload = (e) => {
+                    const base64Str = e.target.result;
+                    selectedBase64Images.push(base64Str);
+
                     const img = document.createElement('img');
-                    img.src = e.target.result;
+                    img.src = base64Str;
                     previewContainer.appendChild(img);
                 };
                 reader.readAsDataURL(file);
             });
         });
 
-        // Upload Product & Images
+        // Upload Product Direct to Realtime Database
         document.getElementById('saveProductBtn').addEventListener('click', async () => {
             const name = document.getElementById('prodName').value;
             const category = document.getElementById('prodCategory').value;
             const price = Number(document.getElementById('prodPrice').value);
             const description = document.getElementById('prodDesc').value;
-            const files = fileInput.files;
 
-            if (!name || !price || files.length === 0) {
+            if (!name || !price || selectedBase64Images.length === 0) {
                 alert('Please fill all required fields and select at least one image.');
                 return;
             }
 
             const btn = document.getElementById('saveProductBtn');
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
 
             try {
-                const imageUrls = [];
-                for (let i = 0; i < files.length; i++) {
-                    const file = files[i];
-                    const sRef = storageRef(storage, `products/${Date.now()}_${file.name}`);
-                    await uploadBytes(sRef, file);
-                    const url = await getDownloadURL(sRef);
-                    imageUrls.push(url);
-                }
+                const productData = { 
+                    name, 
+                    category, 
+                    price, 
+                    description, 
+                    images: selectedBase64Images 
+                };
 
-                const productData = { name, category, price, description, images: imageUrls };
                 await push(ref(db, 'products'), productData);
 
                 showSuccess();
                 document.getElementById('productForm').reset();
                 previewContainer.innerHTML = '';
+                selectedBase64Images = [];
             } catch (error) {
                 alert('Upload Error: ' + error.message);
             } finally {
@@ -268,7 +269,7 @@
             }
         });
 
-        // Realtime Sync & Render Products Across Devices
+        // Realtime Sync Products Across Devices
         const productListEl = document.getElementById('productList');
         onValue(ref(db, 'products'), (snapshot) => {
             productListEl.innerHTML = '';
@@ -286,9 +287,9 @@
                     productListEl.innerHTML += `
                         <div class="product-item">
                             ${imgGalleryHtml}
-                            <h4>${item.name}</h4>
-                            <p><strong>Category:</strong> ${item.category}</p>
-                            <p><strong>Price:</strong> Rs. ${item.price}</p>
+                            <h4>${item.name || ''}</h4>
+                            <p><strong>Category:</strong> ${item.category || ''}</p>
+                            <p><strong>Price:</strong> Rs. ${item.price || 0}</p>
                             <p>${item.description || ''}</p>
                             <div class="btn-group">
                                 <button class="btn-delete" onclick="deleteProduct('${id}')"><i class="fas fa-trash"></i> Delete</button>
