@@ -7,127 +7,105 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .product-detail-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
+        .product-detail-card {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid rgba(212, 175, 55, 0.2);
             border-radius: 18px;
             padding: 20px;
             backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
 
-        .main-img {
+        .main-image-container {
             width: 100%;
-            height: 300px;
-            object-fit: cover;
+            height: 280px;
             border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 15px;
             border: 1px solid rgba(212, 175, 55, 0.3);
         }
 
-        .thumbs-wrap {
+        .main-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thumbnail-grid {
             display: flex;
             gap: 10px;
-            margin-top: 10px;
             overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            scrollbar-width: none;
         }
 
-        .thumbs-wrap img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
+        .thumbnail-grid::-webkit-scrollbar {
+            display: none;
+        }
+
+        .thumbnail-grid img {
+            width: 65px;
+            height: 65px;
             border-radius: 8px;
+            object-fit: cover;
             cursor: pointer;
-            border: 1px solid transparent;
+            border: 2px solid transparent;
+            transition: all 0.2s ease;
         }
 
-        .thumbs-wrap img.active-thumb {
+        .thumbnail-grid img.active {
             border-color: #d4af37;
         }
 
-        .product-title-lg {
-            font-size: 1.6rem;
-            color: #fff;
-            margin-top: 0;
+        .detail-title {
+            color: #ffffff;
+            font-size: 1.4rem;
+            margin: 0 0 10px 0;
         }
 
-        .price-lg {
+        .detail-price {
             font-size: 1.5rem;
             color: #d4af37;
             font-weight: bold;
-            margin: 10px 0;
+            margin-bottom: 15px;
         }
 
-        .desc-text {
-            color: #ccc;
-            line-height: 1.6;
+        .detail-desc {
+            color: #cccccc;
             font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            white-space: pre-line;
         }
 
-        .review-section {
-            margin-top: 35px;
-            background: rgba(255, 255, 255, 0.02);
-            border-radius: 18px;
-            padding: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .star-rating {
+        .action-buttons {
             display: flex;
-            gap: 5px;
-            font-size: 20px;
-            color: #555;
-            cursor: pointer;
-            margin-bottom: 10px;
-        }
-
-        .star-rating .fas.active {
-            color: #d4af37;
-        }
-
-        .review-input, .review-textarea {
-            width: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(212, 175, 55, 0.3);
-            color: #fff;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-
-        .review-item {
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 12px 0;
-        }
-
-        .review-item:last-child {
-            border-bottom: none;
-        }
-
-        .similar-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            flex-direction: column;
             gap: 12px;
-            margin-top: 15px;
         }
 
-        .sim-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            border-radius: 12px;
-            padding: 10px;
+        .btn-outline-gold {
+            background: transparent;
+            border: 1px solid #d4af37;
+            color: #d4af37;
+            padding: 12px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
             text-decoration: none;
-            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
         }
 
-        .sim-card img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 8px;
+        .btn-outline-gold:hover {
+            background: rgba(212, 175, 55, 0.1);
         }
     </style>
 </head>
@@ -139,7 +117,7 @@
         <nav id="nav-menu">
             <a href="index.html">Home</a>
             <a href="services.html">Services</a>
-            <a href="products.html">Products</a>
+            <a href="products.html" class="active">Products</a>
             <a href="vehicle-checker.html">AI Specs Checker</a>
             <a href="gallery.html">Gallery</a>
             <a href="contact.html">Contact</a>
@@ -147,47 +125,19 @@
     </header>
 
     <main class="container">
-        <div id="productDetailContent" class="product-detail-container">
-            <p style="color: #ccc; grid-column: 1/-1; text-align: center;">Loading product details...</p>
+        <div id="productContainer" class="product-detail-card">
+            <p style="text-align: center; color: var(--text-muted); padding: 40px 0;">Loading product details...</p>
         </div>
-
-        <!-- Review Section -->
-        <section class="review-section">
-            <h3 style="color: #d4af37; margin-top: 0;"><i class="fas fa-star"></i> Customer Reviews & Ratings</h3>
-            
-            <div style="margin-bottom: 20px;">
-                <p style="color: #fff; margin-bottom: 5px;">Leave a Review:</p>
-                <div class="star-rating" id="starInput">
-                    <i class="fas fa-star" data-rating="1"></i>
-                    <i class="fas fa-star" data-rating="2"></i>
-                    <i class="fas fa-star" data-rating="3"></i>
-                    <i class="fas fa-star" data-rating="4"></i>
-                    <i class="fas fa-star" data-rating="5"></i>
-                </div>
-                <input type="text" id="reviewerName" class="review-input" placeholder="Your Name">
-                <textarea id="reviewText" class="review-textarea" rows="3" placeholder="Write your review about this product/service..."></textarea>
-                <button onclick="submitReview()" class="btn-gold-sm" style="padding: 10px 15px;">Submit Review</button>
-            </div>
-
-            <div id="reviewsList">
-                <p style="color: #888;">No reviews yet. Be the first to review!</p>
-            </div>
-        </section>
-
-        <!-- Similar Items -->
-        <section style="margin-top: 40px;">
-            <h3 style="color: #fff;"><i class="fas fa-boxes"></i> Similar Items</h3>
-            <div id="similarGrid" class="similar-grid"></div>
-        </section>
     </main>
 
     <footer>
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
     </footer>
 
+    <!-- Firebase Realtime Database SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBzyvbPzwrbO_-S1q0kQC1BIIcWONSiCFE",
@@ -205,144 +155,71 @@
         const urlParams = new URLSearchParams(window.location.search);
         const productId = urlParams.get('id');
 
-        let selectedRating = 5;
-
-        // Star Selection Logic
-        document.querySelectorAll('#starInput i').forEach(star => {
-            star.addEventListener('click', function() {
-                selectedRating = this.getAttribute('data-rating');
-                document.querySelectorAll('#starInput i').forEach((s, idx) => {
-                    if (idx < selectedRating) s.classList.add('active');
-                    else s.classList.remove('active');
-                });
-            });
-        });
-        // Default 5 star active
-        document.querySelectorAll('#starInput i').forEach(s => s.classList.add('active'));
+        const container = document.getElementById('productContainer');
 
         if (!productId) {
-            document.getElementById('productDetailContent').innerHTML = '<p style="color:#e74c3c;">Product not found.</p>';
+            container.innerHTML = '<p style="text-align: center; color: #e74c3c;">Product not found.</p>';
         } else {
-            // Load Product Details
             onValue(ref(db, 'products/' + productId), (snapshot) => {
                 if (!snapshot.exists()) {
-                    document.getElementById('productDetailContent').innerHTML = '<p style="color:#e74c3c;">Product does not exist.</p>';
+                    container.innerHTML = '<p style="text-align: center; color: #e74c3c;">Product does not exist or has been removed.</p>';
                     return;
                 }
 
                 const p = snapshot.val();
                 const images = (p.images && p.images.length > 0) ? p.images : ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80'];
-                
+                const isOut = p.outOfStock;
+                const pDesc = p.desc ? p.desc : 'High quality automotive product available at Mihinadee Motors.';
+
+                // Build Thumbnails
                 let thumbsHtml = '';
-                images.forEach((img, idx) => {
-                    thumbsHtml += `<img src="${img}" class="${idx === 0 ? 'active-thumb' : ''}" onclick="changeMainImg('${img}', this)">`;
+                images.forEach((img, index) => {
+                    thumbsHtml += `<img src="${img}" class="${index === 0 ? 'active' : ''}" onclick="changeMainImage('${img}', this)" alt="Thumbnail">`;
                 });
 
-                document.getElementById('productDetailContent').innerHTML = `
-                    <div>
-                        <img id="mainDisplayImg" src="${images[0]}" class="main-img" alt="${p.title}">
-                        <div class="thumbs-wrap">${thumbsHtml}</div>
+                container.innerHTML = `
+                    <div class="main-image-container">
+                        <img id="mainImage" src="${images[0]}" alt="${p.title}">
                     </div>
-                    <div>
-                        <h1 class="product-title-lg">${p.title}</h1>
-                        <div class="price-lg">${p.price}</div>
-                        <p class="desc-text">${p.desc ? p.desc : 'High quality automotive product available at Mihinadee Motors.'}</p>
-                        <div style="margin-top: 20px;">
-                            ${p.outOfStock 
-                                ? `<button class="btn-gold-sm" style="opacity:0.5; width:100%; padding:12px;" disabled>Out of Stock</button>` 
-                                : `<a href="https://wa.me/94752541337?text=I%20am%20interested%20in%20buying%20${encodeURIComponent(p.title)}" target="_blank" class="btn-gold-sm" style="width:100%; text-align:center; padding:12px; display:block; box-sizing:border-box;"><i class="fab fa-whatsapp"></i> Buy Now via WhatsApp</a>`
-                            }
-                        </div>
+                    ${images.length > 1 ? `<div class="thumbnail-grid">${thumbsHtml}</div>` : ''}
+                    
+                    <h1 class="detail-title">${p.title} ${isOut ? '<span style="color:#e74c3c; font-size: 0.9rem;">(Out of Stock)</span>' : ''}</h1>
+                    <div class="detail-price">${p.price}</div>
+                    <div class="detail-desc">${pDesc}</div>
+
+                    <div class="action-buttons">
+                        ${isOut 
+                            ? `<button class="btn-gold-sm" style="opacity: 0.5; width: 100%; padding: 14px; cursor: not-allowed;" disabled>Out of Stock</button>` 
+                            : `
+                                <a href="vehicle-checker.html?item=${encodeURIComponent(p.title)}&price=${encodeURIComponent(p.price)}" class="btn-outline-gold">
+                                    <i class="fas fa-sliders-h"></i> Check Vehicle Fitment & Total Cost
+                                </a>
+                                <a href="https://api.whatsapp.com/send/?phone=94752541337&text=Hi%20Mihinadee%20Motors,%20I%20am%20interested%20in%20buying%20${encodeURIComponent(p.title)}%20(${encodeURIComponent(p.price)})" target="_blank" class="btn-gold-sm" style="padding: 14px; font-size: 0.95rem;">
+                                    <i class="fab fa-whatsapp"></i> Buy Now via WhatsApp
+                                </a>
+                            `
+                        }
                     </div>
                 `;
             });
-
-            // Load Reviews
-            onValue(ref(db, 'reviews/' + productId), (snapshot) => {
-                const reviewsList = document.getElementById('reviewsList');
-                reviewsList.innerHTML = '';
-
-                if (!snapshot.exists()) {
-                    reviewsList.innerHTML = '<p style="color: #888;">No reviews yet. Be the first to review!</p>';
-                    return;
-                }
-
-                const data = snapshot.val();
-                Object.keys(data).forEach(k => {
-                    const r = data[k];
-                    let stars = '';
-                    for (let i = 0; i < 5; i++) {
-                        stars += `<i class="fas fa-star" style="color: ${i < r.rating ? '#d4af37' : '#444'}; font-size:12px;"></i>`;
-                    }
-                    reviewsList.innerHTML += `
-                        <div class="review-item">
-                            <div style="display:flex; justify-between; align-items:center;">
-                                <strong style="color:#fff; font-size:0.9rem;">${r.name}</strong>
-                                <div>${stars}</div>
-                            </div>
-                            <p style="color:#ccc; font-size:0.85rem; margin:5px 0 0 0;">${r.text}</p>
-                        </div>
-                    `;
-                });
-            });
-
-            // Load Similar Items
-            onValue(ref(db, 'products'), (snapshot) => {
-                const similarGrid = document.getElementById('similarGrid');
-                similarGrid.innerHTML = '';
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    let count = 0;
-                    Object.keys(data).forEach(k => {
-                        if (k !== productId && count < 4) {
-                            const item = data[k];
-                            const img = (item.images && item.images.length > 0) ? item.images[0] : 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80';
-                            similarGrid.innerHTML += `
-                                <a href="product-detail.html?id=${k}" class="sim-card">
-                                    <img src="${img}" alt="${item.title}">
-                                    <h4 style="font-size:0.8rem; margin:5px 0 2px 0; color:#fff;">${item.title}</h4>
-                                    <span style="color:#d4af37; font-size:0.75rem; font-weight:bold;">${item.price}</span>
-                                </a>
-                            `;
-                            count++;
-                        }
-                    });
-                }
-            });
         }
-
-        window.submitReview = function() {
-            const name = document.getElementById('reviewerName').value.trim();
-            const text = document.getElementById('reviewText').value.trim();
-
-            if (!name || !text) {
-                alert('Please enter your name and review text.');
-                return;
-            }
-
-            push(ref(db, 'reviews/' + productId), {
-                name: name,
-                text: text,
-                rating: parseInt(selectedRating),
-                timestamp: Date.now()
-            }).then(() => {
-                alert('Thank you for your review!');
-                document.getElementById('reviewerName').value = '';
-                document.getElementById('reviewText').value = '';
-            });
-        };
-
-        window.changeMainImg = function(src, elem) {
-            document.getElementById('mainDisplayImg').src = src;
-            document.querySelectorAll('.thumbs-wrap img').forEach(i => i.classList.remove('active-thumb'));
-            elem.classList.add('active-thumb');
-        };
     </script>
 
     <script>
+        function changeMainImage(src, element) {
+            document.getElementById('mainImage').src = src;
+            let thumbs = document.querySelectorAll('.thumbnail-grid img');
+            thumbs.forEach(t => t.classList.remove('active'));
+            if (element) element.classList.add('active');
+        }
+
         function toggleMenu() {
             var nav = document.getElementById('nav-menu');
-            if (nav) nav.classList.toggle('show');
+            var btn = document.querySelector('.menu-toggle');
+            if (nav) {
+                nav.classList.toggle('show');
+                if (btn) btn.innerHTML = nav.classList.contains('show') ? '✕' : '☰';
+            }
         }
     </script>
 </body>
