@@ -172,7 +172,7 @@
                 </div>
             </div>
 
-            <button type="button" class="btn-save" onclick="savePrices()"><i class="fas fa-save"></i> Save Prices to Firebase</button>
+            <button type="button" class="btn-save" id="saveBtn"><i class="fas fa-save"></i> Save Prices to Firebase</button>
             <div id="statusMsg" class="status-msg">Prices updated successfully!</div>
         </form>
     </div>
@@ -195,7 +195,7 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Fetch existing prices from Firebase and populate inputs
+        // Fetch existing prices
         onValue(ref(db, 'servicePrices'), (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
@@ -218,8 +218,8 @@
             }
         });
 
-        // Save new prices to Firebase
-        window.savePrices = function() {
+        // Save Functionality Event Listener
+        document.getElementById('saveBtn').addEventListener('click', () => {
             const updatedData = {
                 lockRepairPrice: Number(document.getElementById('lockRepairPrice').value),
                 winderRepairPrice: Number(document.getElementById('winderRepairPrice').value),
@@ -248,7 +248,7 @@
                 .catch((error) => {
                     alert("Error saving prices: " + error.message);
                 });
-        };
+        });
     </script>
 </body>
 </html>
