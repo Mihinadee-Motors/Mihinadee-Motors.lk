@@ -18,7 +18,7 @@
         <!-- Add / Edit Form -->
         <div class="admin-card">
             <h2 id="formTitle">Add New Product</h2>
-            <p class="admin-subtitle">Upload up to 4 images and manage live stock instantly.</p>
+            <p class="admin-subtitle">Manage products, images, and live availability via Firebase.</p>
 
             <form id="productForm" onsubmit="saveProduct(event)">
                 <input type="hidden" id="editDocId" value="">
@@ -43,7 +43,7 @@
                     <input type="file" id="pImages" accept="image/*" multiple onchange="previewImages(event)">
                 </div>
 
-                <!-- Preview Grid -->
+                <!-- Preview Box -->
                 <div class="preview-section">
                     <label>Selected Previews:</label>
                     <div id="previewGrid" class="preview-grid">
@@ -58,7 +58,7 @@
                 </div>
 
                 <button type="submit" class="btn-gold-admin" id="saveBtn">
-                    <i class="fas fa-plus-circle"></i> Save Product to Firebase
+                    <i class="fas fa-plus-circle"></i> Save to Firebase
                 </button>
             </form>
         </div>
@@ -77,14 +77,14 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        // Firebase Configuration
+        // Firebase Configuration for mihindee-motors
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyDummyKeyReplaceThisWithYourOwnKey", 
+            authDomain: "mihindee-motors.firebaseapp.com",
+            projectId: "mihindee-motors",
+            storageBucket: "mihindee-motors.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abc123def456"
         };
 
         const app = initializeApp(firebaseConfig);
@@ -93,7 +93,6 @@
         let currentImageBase64List = [];
         let fetchedProducts = [];
 
-        // Preview local images before uploading
         window.previewImages = function(e) {
             const files = Array.from(e.target.files).slice(0, 4);
             const grid = document.getElementById('previewGrid');
@@ -119,7 +118,6 @@
             });
         };
 
-        // Save / Update Document in Firestore
         window.saveProduct = async function(e) {
             e.preventDefault();
             const saveBtn = document.getElementById('saveBtn');
@@ -151,20 +149,20 @@
                 resetForm();
             } catch (error) {
                 console.error("Firebase Error: ", error);
-                alert("Error saving data to Firebase!");
+                alert("Error saving data! Check Firebase API Key & Rules.");
             } finally {
                 saveBtn.disabled = false;
             }
         };
 
-        // Real-time Listener for Products List
+        // Realtime Listener
         onSnapshot(collection(db, "products"), (snapshot) => {
             fetchedProducts = [];
             const container = document.getElementById('adminProductList');
             container.innerHTML = '';
 
             if (snapshot.empty) {
-                container.innerHTML = '<p style="text-align: center; font-size: 13px; color: var(--text-muted);">No products found in Database.</p>';
+                container.innerHTML = '<p style="text-align: center; font-size: 13px; color: var(--text-muted);">No products found in Firebase.</p>';
                 return;
             }
 
@@ -200,12 +198,12 @@
             document.getElementById('pDesc').value = p.desc;
             document.getElementById('pOutOfStock').checked = p.outOfStock;
             document.getElementById('formTitle').innerText = "Edit Product";
-            document.getElementById('saveBtn').innerHTML = `<i class="fas fa-save"></i> Update Firebase Product`;
+            document.getElementById('saveBtn').innerHTML = `<i class="fas fa-save"></i> Update Product`;
             window.scrollTo({ top: 0, behavior: 'smooth' });
         };
 
         window.deleteProduct = async function(id) {
-            if (confirm("Delete this product permanently from Firebase?")) {
+            if (confirm("Delete this product permanently?")) {
                 await deleteDoc(doc(db, "products", id));
             }
         };
@@ -218,7 +216,7 @@
             document.getElementById('productForm').reset();
             document.getElementById('editDocId').value = "";
             document.getElementById('formTitle').innerText = "Add New Product";
-            document.getElementById('saveBtn').innerHTML = `<i class="fas fa-plus-circle"></i> Save Product to Firebase`;
+            document.getElementById('saveBtn').innerHTML = `<i class="fas fa-plus-circle"></i> Save to Firebase`;
             document.getElementById('previewGrid').innerHTML = '<span class="no-preview">No images selected</span>';
             currentImageBase64List = [];
         }
