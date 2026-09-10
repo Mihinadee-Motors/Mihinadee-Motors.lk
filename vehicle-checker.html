@@ -95,7 +95,7 @@
     <div class="container">
         <div class="checker-box">
             <h2 style="text-align: center; color: #111;">🔍 AI Vehicle Specs & <span style="color:#D4AF37;">Tint Cost Calculator</span></h2>
-            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 20px;">Enter vehicle details, select target windows, and calculate total tinted area and cost instantly.</p>
+            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 20px;">Enter vehicle details, select target windows, and calculate required linear length (Feet) and total cost instantly.</p>
             
             <div class="form-group">
                 <label>Vehicle Make & Model</label>
@@ -129,8 +129,8 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Tinting Film Price per Sq. Ft. (LKR)</label>
-                    <input type="number" id="tint-sqft-price" value="450" placeholder="e.g. 450">
+                    <label>Tinting Film Price per Linear Foot / දිග අඩියක් (LKR)</label>
+                    <input type="number" id="tint-linearft-price" value="500" placeholder="e.g. 500">
                 </div>
             </div>
 
@@ -178,7 +178,7 @@
             var modelElem = document.getElementById('veh-model');
             var yearElem = document.getElementById('veh-year');
             var serviceElem = document.getElementById('veh-service');
-            var sqftPriceElem = document.getElementById('tint-sqft-price');
+            var linearftPriceElem = document.getElementById('tint-linearft-price');
 
             if (!modelElem || !modelElem.value.trim()) {
                 alert("Please enter vehicle model!");
@@ -188,69 +188,69 @@
             var model = modelElem.value.trim();
             var year = yearElem ? yearElem.value.trim() : "";
             var service = serviceElem ? serviceElem.value : "Tinting";
-            var pricePerSqFt = (sqftPriceElem && sqftPriceElem.value) ? parseFloat(sqftPriceElem.value) : 450;
+            var pricePerLinearFt = (linearftPriceElem && linearftPriceElem.value) ? parseFloat(linearftPriceElem.value) : 500;
 
             var modelLower = model.toLowerCase();
             var bodyType = "Standard Hatchback / Sedan";
             var seatCompat = "Standard Front & Rear Split Seats";
             var fitTime = "2 - 3 Hours";
 
-            // Default glass sizes in Sq. Ft.
-            var sizeFrontDoors = 6.0;   
-            var sizeRearDoors = 5.5;    
-            var sizeFrontWind = 13.0;   
-            var sizeRearWind = 8.5;     
-            var sizeQuarter = 2.0;      
-            var sizeSunroof = 4.0;      
+            // Default glass sizes in Linear Feet (දිග අඩි)
+            var lenFrontDoors = 3.5;   // Front 2 doors
+            var lenRearDoors = 3.5;    // Rear 2 doors
+            var lenFrontWind = 4.5;    // Front windshield
+            var lenRearWind = 3.0;     // Rear windshield
+            var lenQuarter = 1.0;      // Quarter glasses
+            var lenSunroof = 2.0;      // Sunroof
 
             if (modelLower.indexOf("alto") !== -1 || modelLower.indexOf("kwid") !== -1 || modelLower.indexOf("maruti") !== -1 || modelLower.indexOf("mira") !== -1) {
                 bodyType = "Compact Hatchback";
                 seatCompat = "Compatible Covers: Alto, Maruti 800, KWID (Front bucket seats match)";
-                sizeFrontDoors = 5.0; sizeRearDoors = 4.5; sizeFrontWind = 11.0; sizeRearWind = 6.5; sizeQuarter = 1.5;
+                lenFrontDoors = 3.0; lenRearDoors = 3.0; lenFrontWind = 4.0; lenRearWind = 2.5; lenQuarter = 0.8;
                 fitTime = "1.5 - 2 Hours";
             } else if (modelLower.indexOf("vitz") !== -1 || modelLower.indexOf("passo") !== -1 || modelLower.indexOf("swift") !== -1 || modelLower.indexOf("wagon") !== -1 || modelLower.indexOf("fit") !== -1 || modelLower.indexOf("aqua") !== -1) {
                 bodyType = "Medium Hatchback / Compact SUV";
                 seatCompat = "Compatible Covers: Vitz, Passo, Aqua, Fit GP5 (Bucket seat layout)";
-                sizeFrontDoors = 6.0; sizeRearDoors = 5.5; sizeFrontWind = 13.0; sizeRearWind = 8.0; sizeQuarter = 2.0;
+                lenFrontDoors = 3.5; lenRearDoors = 3.5; lenFrontWind = 4.5; lenRearWind = 3.0; lenQuarter = 1.0;
                 fitTime = "2 - 3 Hours";
             } else if (modelLower.indexOf("vezel") !== -1 || modelLower.indexOf("grace") !== -1 || modelLower.indexOf("allion") !== -1 || modelLower.indexOf("premio") !== -1 || modelLower.indexOf("axio") !== -1 || modelLower.indexOf("civic") !== -1 || modelLower.indexOf("crv") !== -1) {
                 bodyType = "Luxury Sedan / Full SUV";
                 seatCompat = "Compatible Covers: Grace, Vezel, Axio, Allion Custom Tailored";
-                sizeFrontDoors = 7.0; sizeRearDoors = 6.5; sizeFrontWind = 14.5; sizeRearWind = 9.5; sizeQuarter = 2.5;
+                lenFrontDoors = 4.0; lenRearDoors = 4.0; lenFrontWind = 5.0; lenRearWind = 3.5; lenQuarter = 1.2;
                 fitTime = "3 - 4 Hours";
             }
 
-            var totalSqFt = 0;
+            var totalLinearFt = 0;
             var selectedWindowsList = [];
 
             if (service !== "Seat Covers") {
                 if (document.getElementById('chk-front-doors') && document.getElementById('chk-front-doors').checked) {
-                    totalSqFt += sizeFrontDoors;
+                    totalLinearFt += lenFrontDoors;
                     selectedWindowsList.push("Front Doors (2)");
                 }
                 if (document.getElementById('chk-rear-doors') && document.getElementById('chk-rear-doors').checked) {
-                    totalSqFt += sizeRearDoors;
+                    totalLinearFt += lenRearDoors;
                     selectedWindowsList.push("Rear Doors (2)");
                 }
                 if (document.getElementById('chk-front-windshield') && document.getElementById('chk-front-windshield').checked) {
-                    totalSqFt += sizeFrontWind;
+                    totalLinearFt += lenFrontWind;
                     selectedWindowsList.push("Front Windshield");
                 }
                 if (document.getElementById('chk-rear-windshield') && document.getElementById('chk-rear-windshield').checked) {
-                    totalSqFt += sizeRearWind;
+                    totalLinearFt += lenRearWind;
                     selectedWindowsList.push("Rear Windshield");
                 }
                 if (document.getElementById('chk-quarter-glasses') && document.getElementById('chk-quarter-glasses').checked) {
-                    totalSqFt += sizeQuarter;
+                    totalLinearFt += lenQuarter;
                     selectedWindowsList.push("Quarter Glasses");
                 }
                 if (document.getElementById('chk-sunroof') && document.getElementById('chk-sunroof').checked) {
-                    totalSqFt += sizeSunroof;
+                    totalLinearFt += lenSunroof;
                     selectedWindowsList.push("Sunroof Glass");
                 }
             }
 
-            var totalCost = totalSqFt * pricePerSqFt;
+            var totalCost = totalLinearFt * pricePerLinearFt;
             var formattedCost = "LKR " + totalCost.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
 
             currentEstimate = {
@@ -261,8 +261,8 @@
                 seatCompat: seatCompat, 
                 fitTime: fitTime,
                 selectedWindows: selectedWindowsList.join(", ") || "None",
-                totalSqFt: totalSqFt.toFixed(1),
-                pricePerSqFt: pricePerSqFt,
+                totalLinearFt: totalLinearFt.toFixed(1),
+                pricePerLinearFt: pricePerLinearFt,
                 formattedCost: service === "Seat Covers" ? "LKR 25,000 - 45,000 (Based on Material)" : formattedCost
             };
 
@@ -270,8 +270,8 @@
             
             if (service !== "Seat Covers") {
                 document.getElementById('res-specs').innerHTML = '<strong>🪟 Selected Windows:</strong> ' + currentEstimate.selectedWindows;
-                document.getElementById('res-area').innerHTML = '<strong>📐 Total Estimated Area:</strong> ' + currentEstimate.totalSqFt + ' Sq. Ft.';
-                document.getElementById('res-price').innerHTML = '<strong>💰 Calculated Tinting Cost:</strong> <span style="color:#D4AF37; font-size:18px;">' + formattedCost + '</span> (@ LKR ' + pricePerSqFt + '/Sq. Ft.)';
+                document.getElementById('res-area').innerHTML = '<strong>📐 Total Required Length:</strong> ' + currentEstimate.totalLinearFt + ' Feet (දිග අඩි)';
+                document.getElementById('res-price').innerHTML = '<strong>💰 Calculated Tinting Cost:</strong> <span style="color:#D4AF37; font-size:18px;">' + formattedCost + '</span> (@ LKR ' + pricePerLinearFt + '/Linear Foot)';
             } else {
                 document.getElementById('res-specs').innerHTML = '<strong>🪑 Seat Layout & Compatibility:</strong> ' + seatCompat;
                 document.getElementById('res-area').innerHTML = '';
@@ -290,8 +290,8 @@
             
             if (currentEstimate.service !== "Seat Covers") {
                 msg += "*Selected Windows:* " + currentEstimate.selectedWindows + "%0A" +
-                       "*Total Area:* " + currentEstimate.totalSqFt + " Sq. Ft.%0A" +
-                       "*Price per Sq. Ft.:* LKR " + currentEstimate.pricePerSqFt + "%0A" +
+                       "*Total Length:* " + currentEstimate.totalLinearFt + " Feet (දිග අඩි)%0A" +
+                       "*Price per Linear Foot:* LKR " + currentEstimate.pricePerLinearFt + "%0A" +
                        "*Estimated Cost:* " + currentEstimate.formattedCost + "%0A";
             } else {
                 msg += "*Compatibility:* " + currentEstimate.seatCompat + "%0A" +
