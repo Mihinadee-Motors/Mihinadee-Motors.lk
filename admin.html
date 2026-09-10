@@ -14,7 +14,7 @@
             padding: 20px;
         }
         .admin-card {
-            max-width: 800px;
+            max-width: 900px;
             margin: 20px auto;
             background: rgba(255, 255, 255, 0.04);
             border: 1px solid rgba(212, 175, 55, 0.3);
@@ -31,17 +31,18 @@
             color: #d4af37;
             border-bottom: 1px solid rgba(212, 175, 55, 0.3);
             padding-bottom: 5px;
-            margin-top: 20px;
+            margin-top: 30px;
             margin-bottom: 15px;
         }
         .grid-inputs {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 15px;
         }
         .form-group {
             display: flex;
             flex-direction: column;
+            margin-bottom: 10px;
         }
         .form-group label {
             font-size: 0.85rem;
@@ -56,22 +57,74 @@
             color: #ffffff;
             outline: none;
         }
-        .btn-save {
+        .btn-action {
             width: 100%;
             background: linear-gradient(135deg, #d4af37, #aa820a);
             color: #000;
             border: none;
-            padding: 14px;
+            padding: 12px;
             font-weight: bold;
             font-size: 1rem;
-            border-radius: 10px;
+            border-radius: 8px;
             cursor: pointer;
-            margin-top: 25px;
+            margin-top: 15px;
             transition: 0.3s;
         }
-        .btn-save:hover {
+        .btn-action:hover {
             background: #ffffff;
             color: #000;
+        }
+        .product-list {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .product-item {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            position: relative;
+        }
+        .product-item img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+        .product-item h4 {
+            margin: 5px 0;
+            color: #d4af37;
+        }
+        .product-item p {
+            margin: 3px 0;
+            font-size: 0.85rem;
+            color: #ddd;
+        }
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .btn-edit {
+            background: #27ae60;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
+        }
+        .btn-delete {
+            background: #c0392b;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1;
         }
         .status-msg {
             text-align: center;
@@ -85,102 +138,72 @@
 <body>
 
     <div class="admin-card">
-        <h2 class="admin-title"><i class="fas fa-user-shield"></i> Service Price Manager</h2>
+        <h2 class="admin-title"><i class="fas fa-user-shield"></i> Mihinadee Motors Admin Dashboard</h2>
 
-        <form id="priceForm">
-            <!-- 1. Lock & Winder Repair -->
-            <div class="section-title"><i class="fas fa-key"></i> Lock & Winder Repair</div>
+        <!-- SECTION 1: Product Upload & Edit -->
+        <div class="section-title"><i class="fas fa-box-open"></i> Add / Edit Product</div>
+        <form id="productForm">
+            <input type="hidden" id="productId">
             <div class="grid-inputs">
                 <div class="form-group">
-                    <label>Vehicle Lock Repair (Rs.)</label>
-                    <input type="number" id="lockRepairPrice" class="form-control" placeholder="2500">
+                    <label>Product Name</label>
+                    <input type="text" id="prodName" class="form-control" placeholder="e.g. Car Key Remote" required>
                 </div>
                 <div class="form-group">
-                    <label>Winder Repair (Rs.)</label>
-                    <input type="number" id="winderRepairPrice" class="form-control" placeholder="3000">
+                    <label>Category</label>
+                    <input type="text" id="prodCategory" class="form-control" placeholder="e.g. Alarm Systems" required>
                 </div>
                 <div class="form-group">
-                    <label>Center Lock Repair (Rs.)</label>
-                    <input type="number" id="centerLockPrice" class="form-control" placeholder="4500">
+                    <label>Price (Rs.)</label>
+                    <input type="number" id="prodPrice" class="form-control" placeholder="12500" required>
+                </div>
+                <div class="form-group">
+                    <label>Image URL</label>
+                    <input type="text" id="prodImage" class="form-control" placeholder="https://..." required>
                 </div>
             </div>
-
-            <!-- 2. Upgrades & Security Systems -->
-            <div class="section-title"><i class="fas fa-shield-alt"></i> Upgrades & Security Systems</div>
-            <div class="grid-inputs">
-                <div class="form-group">
-                    <label>Power Windows Conversion (Rs.)</label>
-                    <input type="number" id="powerWindowPrice" class="form-control" placeholder="28000">
-                </div>
-                <div class="form-group">
-                    <label>Alarm System & Remote (Rs.)</label>
-                    <input type="number" id="alarmSystemPrice" class="form-control" placeholder="12500">
-                </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="prodDesc" class="form-control" rows="3" placeholder="Enter product details..."></textarea>
             </div>
-
-            <!-- 3. Styling & Protection -->
-            <div class="section-title"><i class="fas fa-paint-brush"></i> Styling & Protection</div>
-            <div class="grid-inputs">
-                <div class="form-group">
-                    <label>Tinted Glass (Rs.)</label>
-                    <input type="number" id="tintedGlassPrice" class="form-control" placeholder="8500">
-                </div>
-                <div class="form-group">
-                    <label>Body Stickers (Rs.)</label>
-                    <input type="number" id="bodyStickersPrice" class="form-control" placeholder="4500">
-                </div>
-                <div class="form-group">
-                    <label>Headlight Stickers (Rs.)</label>
-                    <input type="number" id="headlightStickersPrice" class="form-control" placeholder="2500">
-                </div>
-                <div class="form-group">
-                    <label>Step Board Stickers (Rs.)</label>
-                    <input type="number" id="stepBoardStickersPrice" class="form-control" placeholder="2000">
-                </div>
-            </div>
-
-            <!-- 4. Interior & Exterior Fitting -->
-            <div class="section-title"><i class="fas fa-car-side"></i> Interior & Exterior Fitting</div>
-            <div class="grid-inputs">
-                <div class="form-group">
-                    <label>Seat Covers (Rs.)</label>
-                    <input type="number" id="seatCoversPrice" class="form-control" placeholder="15000">
-                </div>
-                <div class="form-group">
-                    <label>Door Visors (Rs.)</label>
-                    <input type="number" id="doorVisorsPrice" class="form-control" placeholder="3500">
-                </div>
-                <div class="form-group">
-                    <label>Chrome Items (Rs.)</label>
-                    <input type="number" id="chromeItemsPrice" class="form-control" placeholder="4000">
-                </div>
-                <div class="form-group">
-                    <label>Carpets (Rs.)</label>
-                    <input type="number" id="carpetsPrice" class="form-control" placeholder="4500">
-                </div>
-                <div class="form-group">
-                    <label>Door Handles (Rs.)</label>
-                    <input type="number" id="doorHandlesPrice" class="form-control" placeholder="2500">
-                </div>
-                <div class="form-group">
-                    <label>Wiper Blades (Rs.)</label>
-                    <input type="number" id="wiperBladesPrice" class="form-control" placeholder="1800">
-                </div>
-                <div class="form-group">
-                    <label>Badges & Clips (Rs.)</label>
-                    <input type="number" id="badgesClipsPrice" class="form-control" placeholder="1200">
-                </div>
-            </div>
-
-            <button type="button" class="btn-save" id="saveBtn"><i class="fas fa-save"></i> Save Prices to Firebase</button>
-            <div id="statusMsg" class="status-msg">Prices updated successfully!</div>
+            <button type="button" class="btn-action" id="saveProductBtn"><i class="fas fa-upload"></i> Save Product</button>
         </form>
+
+        <!-- SECTION 2: Product Preview & Management -->
+        <div class="section-title"><i class="fas fa-list"></i> Product Inventory Preview</div>
+        <div id="productList" class="product-list">
+            <p style="text-align:center; width:100%;">Loading products...</p>
+        </div>
+
+        <!-- SECTION 3: Service Price Manager -->
+        <div class="section-title"><i class="fas fa-tags"></i> Quick Service Price Manager</div>
+        <div class="grid-inputs">
+            <div class="form-group">
+                <label>Lock Repair (Rs.)</label>
+                <input type="number" id="lockRepairPrice" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Winder Repair (Rs.)</label>
+                <input type="number" id="winderRepairPrice" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Alarm System (Rs.)</label>
+                <input type="number" id="alarmSystemPrice" class="form-control">
+            </div>
+            <div class="form-group">
+                <label>Seat Covers (Rs.)</label>
+                <input type="number" id="seatCoversPrice" class="form-control">
+            </div>
+        </div>
+        <button type="button" class="btn-action" id="savePricesBtn"><i class="fas fa-save"></i> Save Service Prices</button>
+
+        <div id="statusMsg" class="status-msg">Operation completed successfully!</div>
     </div>
 
-    <!-- Firebase Realtime Database SDK -->
+    <!-- Firebase SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBzyvbPzwrbO_-S1q0kQC1BIIcWONSiCFE",
@@ -195,60 +218,102 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Fetch existing prices
+        // 1. Fetch & Preview Products
+        const productListEl = document.getElementById('productList');
+        onValue(ref(db, 'products'), (snapshot) => {
+            productListEl.innerHTML = '';
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                Object.keys(data).forEach(id => {
+                    const item = data[id];
+                    productListEl.innerHTML += `
+                        <div class="product-item">
+                            <img src="${item.image || 'https://via.placeholder.com/150'}" alt="${item.name}">
+                            <h4>${item.name}</h4>
+                            <p><strong>Category:</strong> ${item.category}</p>
+                            <p><strong>Price:</strong> Rs. ${item.price}</p>
+                            <p>${item.description || ''}</p>
+                            <div class="btn-group">
+                                <button class="btn-edit" onclick="editProduct('${id}', '${item.name}', '${item.category}', ${item.price}, '${item.image}', '${item.description || ''}')"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn-delete" onclick="deleteProduct('${id}')"><i class="fas fa-trash"></i> Delete</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                productListEl.innerHTML = '<p style="text-align:center; width:100%;">No products found.</p>';
+            }
+        });
+
+        // 2. Add / Edit Product
+        document.getElementById('saveProductBtn').addEventListener('click', () => {
+            const id = document.getElementById('productId').value;
+            const name = document.getElementById('prodName').value;
+            const category = document.getElementById('prodCategory').value;
+            const price = Number(document.getElementById('prodPrice').value);
+            const image = document.getElementById('prodImage').value;
+            const description = document.getElementById('prodDesc').value;
+
+            if (!name || !price) {
+                alert('Please enter product name and price!');
+                return;
+            }
+
+            const productData = { name, category, price, image, description };
+
+            if (id) {
+                set(ref(db, 'products/' + id), productData).then(showSuccess);
+            } else {
+                push(ref(db, 'products'), productData).then(showSuccess);
+            }
+
+            document.getElementById('productForm').reset();
+            document.getElementById('productId').value = '';
+        });
+
+        // Global functions for Edit & Delete
+        window.editProduct = (id, name, category, price, image, desc) => {
+            document.getElementById('productId').value = id;
+            document.getElementById('prodName').value = name;
+            document.getElementById('prodCategory').value = category;
+            document.getElementById('prodPrice').value = price;
+            document.getElementById('prodImage').value = image;
+            document.getElementById('prodDesc').value = desc;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        window.deleteProduct = (id) => {
+            if (confirm('Are you sure you want to delete this product?')) {
+                remove(ref(db, 'products/' + id)).then(showSuccess);
+            }
+        };
+
+        // 3. Service Prices Load & Save
         onValue(ref(db, 'servicePrices'), (snapshot) => {
             if (snapshot.exists()) {
                 const data = snapshot.val();
                 document.getElementById('lockRepairPrice').value = data.lockRepairPrice || 2500;
                 document.getElementById('winderRepairPrice').value = data.winderRepairPrice || 3000;
-                document.getElementById('centerLockPrice').value = data.centerLockPrice || 4500;
-                document.getElementById('powerWindowPrice').value = data.powerWindowPrice || 28000;
                 document.getElementById('alarmSystemPrice').value = data.alarmSystemPrice || 12500;
-                document.getElementById('tintedGlassPrice').value = data.tintedGlassPrice || 8500;
-                document.getElementById('bodyStickersPrice').value = data.bodyStickersPrice || 4500;
-                document.getElementById('headlightStickersPrice').value = data.headlightStickersPrice || 2500;
-                document.getElementById('stepBoardStickersPrice').value = data.stepBoardStickersPrice || 2000;
                 document.getElementById('seatCoversPrice').value = data.seatCoversPrice || 15000;
-                document.getElementById('doorVisorsPrice').value = data.doorVisorsPrice || 3500;
-                document.getElementById('chromeItemsPrice').value = data.chromeItemsPrice || 4000;
-                document.getElementById('carpetsPrice').value = data.carpetsPrice || 4500;
-                document.getElementById('doorHandlesPrice').value = data.doorHandlesPrice || 2500;
-                document.getElementById('wiperBladesPrice').value = data.wiperBladesPrice || 1800;
-                document.getElementById('badgesClipsPrice').value = data.badgesClipsPrice || 1200;
             }
         });
 
-        // Save Functionality Event Listener
-        document.getElementById('saveBtn').addEventListener('click', () => {
-            const updatedData = {
+        document.getElementById('savePricesBtn').addEventListener('click', () => {
+            const servicePrices = {
                 lockRepairPrice: Number(document.getElementById('lockRepairPrice').value),
                 winderRepairPrice: Number(document.getElementById('winderRepairPrice').value),
-                centerLockPrice: Number(document.getElementById('centerLockPrice').value),
-                powerWindowPrice: Number(document.getElementById('powerWindowPrice').value),
                 alarmSystemPrice: Number(document.getElementById('alarmSystemPrice').value),
-                tintedGlassPrice: Number(document.getElementById('tintedGlassPrice').value),
-                bodyStickersPrice: Number(document.getElementById('bodyStickersPrice').value),
-                headlightStickersPrice: Number(document.getElementById('headlightStickersPrice').value),
-                stepBoardStickersPrice: Number(document.getElementById('stepBoardStickersPrice').value),
-                seatCoversPrice: Number(document.getElementById('seatCoversPrice').value),
-                doorVisorsPrice: Number(document.getElementById('doorVisorsPrice').value),
-                chromeItemsPrice: Number(document.getElementById('chromeItemsPrice').value),
-                carpetsPrice: Number(document.getElementById('carpetsPrice').value),
-                doorHandlesPrice: Number(document.getElementById('doorHandlesPrice').value),
-                wiperBladesPrice: Number(document.getElementById('wiperBladesPrice').value),
-                badgesClipsPrice: Number(document.getElementById('badgesClipsPrice').value)
+                seatCoversPrice: Number(document.getElementById('seatCoversPrice').value)
             };
-
-            set(ref(db, 'servicePrices'), updatedData)
-                .then(() => {
-                    const statusMsg = document.getElementById('statusMsg');
-                    statusMsg.style.display = 'block';
-                    setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
-                })
-                .catch((error) => {
-                    alert("Error saving prices: " + error.message);
-                });
+            set(ref(db, 'servicePrices'), servicePrices).then(showSuccess);
         });
+
+        function showSuccess() {
+            const statusMsg = document.getElementById('statusMsg');
+            statusMsg.style.display = 'block';
+            setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
+        }
     </script>
 </body>
 </html>
