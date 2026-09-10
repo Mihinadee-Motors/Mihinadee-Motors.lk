@@ -32,7 +32,6 @@
             color: #333333;
             box-shadow: 0 4px 10px rgba(0,0,0,0.3);
         }
-        /* Clear/Back Button inside Search Bar */
         .clear-search-btn {
             position: absolute;
             right: 15px;
@@ -112,12 +111,13 @@
             <a href="index.html" class="active">Home</a>
             <a href="services.html">Services</a>
             <a href="products.html">Products</a>
+            <a href="vehicle-checker.html">AI Specs Checker</a>
             <a href="projects.html">Projects</a>
             <a href="contact.html">Contact</a>
         </nav>
     </header>
 
-    <!-- Top Search Bar with Clear Button -->
+    <!-- Top Search Bar -->
     <div class="top-search-wrapper">
         <div class="search-container">
             <form onsubmit="handleSearchSubmit(event)">
@@ -129,14 +129,12 @@
 
     <!-- Hero Section -->
     <section class="hero" id="hero-section">
-        <!-- Default Hero Content -->
         <div id="default-hero-content">
             <h1>Precision <span>Repair</span> & Luxury <span>Modification</span></h1>
             <p>Your vehicle deserves elite care. From advanced engine tuning to custom body styling, we bring high performance and supreme luxury to your ride.</p>
             <a href="contact.html" class="btn-gold">Schedule Service</a>
         </div>
 
-        <!-- Search Results Container -->
         <div id="search-results-grid" class="search-results-hero"></div>
     </section>
 
@@ -259,7 +257,6 @@
             }
         }
 
-        // Search Input Clear කිරීම සහ Reset කිරීම
         function clearSearch() {
             const inputField = document.getElementById('search-input');
             inputField.value = "";
