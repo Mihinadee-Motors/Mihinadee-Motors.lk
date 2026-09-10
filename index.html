@@ -74,18 +74,29 @@
                 const p = data[key];
                 const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80';
                 const isOut = p.outOfStock;
+                const pDesc = p.desc ? p.desc : 'High quality automotive product for your vehicle.';
 
                 grid.innerHTML += `
                     <div class="product-card ${isOut ? 'out-of-stock-card' : ''}">
                         <img src="${imgUrl}" alt="${p.title}">
                         <div class="product-info">
                             <h3>${p.title} ${isOut ? '<span class="out-tag">Out of Stock</span>' : ''}</h3>
-                            <p>${p.desc}</p>
+                            <p>${pDesc}</p>
                             <span class="price">${p.price}</span>
-                            ${isOut 
-                                ? `<button class="btn-gold-sm disabled-btn" disabled>Out of Stock</button>` 
-                                : `<a href="https://wa.me/94752541337?text=I%20am%20interested%20in%20${encodeURIComponent(p.title)}" class="btn-gold-sm" target="_blank"><i class="fab fa-whatsapp"></i> Inquire</a>`
-                            }
+                            
+                            <div class="product-actions" style="display: flex; gap: 8px; margin-top: 10px;">
+                                ${isOut 
+                                    ? `<button class="btn-gold-sm disabled-btn" style="width: 100%;" disabled>Out of Stock</button>` 
+                                    : `
+                                        <a href="https://wa.me/94752541337?text=Hi%2C%20I%20would%20like%20to%20order%20${encodeURIComponent(p.title)}" class="btn-gold-sm" target="_blank" style="flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;">
+                                            <i class="fab fa-whatsapp"></i> WhatsApp Order
+                                        </a>
+                                        <button onclick="addToCart('${p.title}', '${p.price}')" class="btn-gold-sm" style="padding: 0 12px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
+                                    `
+                                }
+                            </div>
                         </div>
                     </div>`;
             });
@@ -109,6 +120,10 @@
                 nav.classList.toggle('show');
                 if (btn) btn.innerHTML = nav.classList.contains('show') ? '✕' : '☰';
             }
+        }
+
+        function addToCart(title, price) {
+            alert(title + " added to cart!");
         }
     </script>
 </body>
