@@ -6,6 +6,40 @@
     <title>Admin Dashboard | Mihinadee Motors</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .service-pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .service-price-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            padding: 15px;
+            border-radius: 12px;
+        }
+        .service-price-card label {
+            display: block;
+            color: #d4af37;
+            font-size: 0.85rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .service-price-card input {
+            width: 100%;
+            padding: 10px;
+            background: #000;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 8px;
+            color: #fff;
+            box-sizing: border-box;
+            outline: none;
+        }
+        .service-price-card input:focus {
+            border-color: #d4af37;
+        }
+    </style>
 </head>
 <body>
 
@@ -15,6 +49,50 @@
     </header>
 
     <main class="container">
+        <!-- Service Pricing Settings Section -->
+        <div class="admin-card" style="margin-bottom: 25px;">
+            <h2><i class="fas fa-tags" style="color: #d4af37;"></i> Manage All Service Rates</h2>
+            <p class="admin-subtitle">Update base rates and per linear foot prices across all devices in real-time.</p>
+
+            <form id="servicePricesForm" onsubmit="saveServicePrices(event)">
+                <div class="service-pricing-grid">
+                    <div class="service-price-card">
+                        <label><i class="fas fa-film"></i> Tint Price per Linear Foot (Rs.)</label>
+                        <input type="number" id="tintPricePerFoot" placeholder="e.g. 1200" required>
+                    </div>
+
+                    <div class="service-price-card">
+                        <label><i class="fas fa-car-side"></i> Front Windshield Sunstrip (Rs.)</label>
+                        <input type="number" id="frontWindshieldPrice" placeholder="e.g. 3500" required>
+                    </div>
+
+                    <div class="service-price-card">
+                        <label><i class="fas fa-spray-can"></i> Nano Ceramic Coating (Rs.)</label>
+                        <input type="number" id="nanoCeramicPrice" placeholder="e.g. 45000" required>
+                    </div>
+
+                    <div class="service-price-card">
+                        <label><i class="fas fa-paint-roller"></i> Full Body Wrap Base Rate (Rs.)</label>
+                        <input type="number" id="fullWrapPrice" placeholder="e.g. 150000" required>
+                    </div>
+
+                    <div class="service-price-card">
+                        <label><i class="fas fa-sparkles"></i> Interior Detailing (Rs.)</label>
+                        <input type="number" id="interiorDetailingPrice" placeholder="e.g. 18000" required>
+                    </div>
+
+                    <div class="service-price-card">
+                        <label><i class="fas fa-lightbulb"></i> Headlight Restoration (Rs.)</label>
+                        <input type="number" id="headlightPrice" placeholder="e.g. 4500" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-gold-admin" id="savePricesBtn" style="margin-top: 20px;">
+                    <i class="fas fa-sync-alt"></i> Save & Sync All Service Prices
+                </button>
+            </form>
+        </div>
+
         <!-- Add / Edit Form -->
         <div class="admin-card">
             <h2 id="formTitle">Add New Product</h2>
@@ -92,6 +170,48 @@
         let currentImageBase64List = [];
         let fetchedProducts = {};
 
+        // 1. Fetch & Auto-Fill Current Service Prices from Firebase
+        onValue(ref(db, 'servicePrices'), (snapshot) => {
+            if (snapshot.exists()) {
+                const rates = snapshot.val();
+                if (rates.tintPricePerFoot) document.getElementById('tintPricePerFoot').value = rates.tintPricePerFoot;
+                if (rates.frontWindshieldPrice) document.getElementById('frontWindshieldPrice').value = rates.frontWindshieldPrice;
+                if (rates.nanoCeramicPrice) document.getElementById('nanoCeramicPrice').value = rates.nanoCeramicPrice;
+                if (rates.fullWrapPrice) document.getElementById('fullWrapPrice').value = rates.fullWrapPrice;
+                if (rates.interiorDetailingPrice) document.getElementById('interiorDetailingPrice').value = rates.interiorDetailingPrice;
+                if (rates.headlightPrice) document.getElementById('headlightPrice').value = rates.headlightPrice;
+            }
+        });
+
+        // 2. Save Service Prices Function
+        window.saveServicePrices = async function(e) {
+            e.preventDefault();
+            const btn = document.getElementById('savePricesBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Rates...';
+
+            const serviceRates = {
+                tintPricePerFoot: parseFloat(document.getElementById('tintPricePerFoot').value) || 0,
+                frontWindshieldPrice: parseFloat(document.getElementById('frontWindshieldPrice').value) || 0,
+                nanoCeramicPrice: parseFloat(document.getElementById('nanoCeramicPrice').value) || 0,
+                fullWrapPrice: parseFloat(document.getElementById('fullWrapPrice').value) || 0,
+                interiorDetailingPrice: parseFloat(document.getElementById('interiorDetailingPrice').value) || 0,
+                headlightPrice: parseFloat(document.getElementById('headlightPrice').value) || 0,
+                updatedAt: new Date().toISOString()
+            };
+
+            try {
+                await set(ref(db, 'servicePrices'), serviceRates);
+                alert("All Service Prices updated successfully across all devices!");
+            } catch (err) {
+                console.error("Error updating prices: ", err);
+                alert("Failed to save service prices: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i> Save & Sync All Service Prices';
+            }
+        };
+
         window.previewImages = function(e) {
             const files = Array.from(e.target.files).slice(0, 4);
             const grid = document.getElementById('previewGrid');
@@ -154,7 +274,7 @@
             }
         };
 
-        // Live Realtime Listener
+        // Live Realtime Listener for Products
         onValue(ref(db, 'products'), (snapshot) => {
             const container = document.getElementById('adminProductList');
             container.innerHTML = '';
