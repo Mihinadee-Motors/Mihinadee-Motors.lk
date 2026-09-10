@@ -9,9 +9,16 @@
 </head>
 <body>
 
-    <!-- iOS Glass Nav Bar -->
+    <!-- iOS Glass Nav Bar with Top Search Bar -->
     <header>
         <div class="logo">MIHINADEE <span>MOTORS</span></div>
+        
+        <!-- Header Top Search Bar -->
+        <div class="header-search">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Search products..." id="searchInput">
+        </div>
+
         <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle Navigation">☰</button>
         <nav id="nav-menu">
             <a href="index.html" class="active">Home</a>
@@ -92,7 +99,7 @@
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
     </footer>
 
-    <!-- JavaScript for Mobile Menu -->
+    <!-- JavaScript for Mobile Menu & Search Filter -->
     <script>
         function toggleMenu() {
             var nav = document.getElementById('nav-menu');
@@ -104,6 +111,22 @@
                 }
             }
         }
+
+        // Live Search Filter Function
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            let filterValue = this.value.toLowerCase();
+            let productCards = document.querySelectorAll('.product-card');
+
+            productCards.forEach(card => {
+                let title = card.querySelector('h3').textContent.toLowerCase();
+                let desc = card.querySelector('p').textContent.toLowerCase();
+                if (title.includes(filterValue) || desc.includes(filterValue)) {
+                    card.style.display = "flex";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        });
     </script>
 </body>
 </html>
