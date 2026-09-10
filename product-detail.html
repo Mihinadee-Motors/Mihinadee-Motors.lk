@@ -318,8 +318,10 @@
         let currentCategory = "";
         let selectedStars = 5;
 
+        // Updated WhatsApp Number
+        const MY_WHATSAPP_NUMBER = "94752541334"; 
+
         if (productId) {
-            // Fetch Current Product
             get(ref(db, 'products/' + productId)).then(snapshot => {
                 if (snapshot.exists()) {
                     const data = snapshot.val();
@@ -347,11 +349,10 @@
                         });
                     }
 
-                    // Setup WhatsApp Link
+                    // Setup WhatsApp Link with updated phone number
                     const waMsg = encodeURIComponent(`Hello Mihinadee Motors, I am interested in buying: ${data.name} (Rs. ${data.price})`);
-                    document.getElementById('whatsappBtn').href = `https://wa.me/94771234567?text=${waMsg}`;
+                    document.getElementById('whatsappBtn').href = `https://wa.me/${MY_WHATSAPP_NUMBER}?text=${waMsg}`;
 
-                    // Load Similar Products & Reviews
                     loadSimilarProducts(data.category);
                     loadReviews();
                 }
