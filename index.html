@@ -32,7 +32,6 @@
                 </div>
             </div>
             
-            <!-- Dynamic Realtime Products Grid -->
             <div id="liveProductGrid" class="product-grid-2col">
                 <p style="grid-column: span 2; text-align:center; color: var(--text-muted);">Loading products...</p>
             </div>
@@ -43,35 +42,36 @@
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
     </footer>
 
-    <!-- Firebase SDK Modules -->
+    <!-- Firebase Realtime Database SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyReplaceThisWithYourOwnKey", 
+            apiKey: "AIzaSyBzyvbPzwrbO_-S1q0kQC1BIIcWONSiCFE",
             authDomain: "mihindee-motors.firebaseapp.com",
+            databaseURL: "https://mihindee-motors-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "mihindee-motors",
-            storageBucket: "mihindee-motors.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abc123def456"
+            storageBucket: "mihindee-motors.firebasestorage.app",
+            messagingSenderId: "155394892185",
+            appId: "1:155394892185:web:9c0a7963685edb78bcf308"
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const db = getDatabase(app);
 
-        // Fetch Live Products from Firestore
-        onSnapshot(collection(db, "products"), (snapshot) => {
+        onValue(ref(db, 'products'), (snapshot) => {
             const grid = document.getElementById('liveProductGrid');
             grid.innerHTML = '';
 
-            if (snapshot.empty) {
+            if (!snapshot.exists()) {
                 grid.innerHTML = '<p style="grid-column: span 2; text-align:center; color: var(--text-muted);">No products currently available.</p>';
                 return;
             }
 
-            snapshot.forEach((docSnap) => {
-                const p = docSnap.data();
+            const data = snapshot.val();
+            Object.keys(data).forEach((key) => {
+                const p = data[key];
                 const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80';
                 const isOut = p.outOfStock;
 
@@ -91,7 +91,6 @@
             });
         });
 
-        // Search Filter
         document.getElementById('searchInput').addEventListener('keyup', function() {
             let filterValue = this.value.toLowerCase();
             let cards = document.querySelectorAll('.product-card');
