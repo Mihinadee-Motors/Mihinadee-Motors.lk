@@ -41,13 +41,18 @@
             box-sizing: border-box;
         }
 
-        .form-control:focus {
-            border-color: #d4af37;
+        .section-subtitle {
+            color: #d4af37;
+            font-size: 1rem;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            border-bottom: 1px dashed rgba(212, 175, 55, 0.3);
+            padding-bottom: 5px;
         }
 
         .option-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 12px;
             margin-top: 10px;
         }
@@ -62,6 +67,8 @@
             align-items: center;
             gap: 10px;
             transition: all 0.2s ease;
+            color: #fff;
+            font-size: 0.9rem;
         }
 
         .option-card.active {
@@ -89,6 +96,41 @@
             padding: 6px 12px;
             border-radius: 20px;
             font-size: 0.85rem;
+        }
+
+        .action-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-reset {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid #e74c3c;
+            color: #ff6b6b;
+            padding: 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 1;
+            transition: 0.3s;
+        }
+
+        .btn-reset:hover {
+            background: #e74c3c;
+            color: #fff;
+        }
+
+        .btn-calc {
+            background: linear-gradient(135deg, #d4af37, #aa820a);
+            color: #000;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: bold;
+            flex: 2;
+            font-size: 1rem;
         }
 
         .result-box {
@@ -142,8 +184,8 @@
     </header>
 
     <main class="container">
-        <h2 style="color: #d4af37; text-align: center; margin-top: 20px;">AI Vehicle Specs & Custom Fitment Calculator</h2>
-        <p style="color: #cccccc; text-align: center; font-size: 0.9rem; margin-bottom: 20px;">Select vehicle model and required window areas to get exact specifications and live pricing.</p>
+        <h2 style="color: #d4af37; text-align: center; margin-top: 20px;">AI Vehicle Specs & Multi-Service Calculator</h2>
+        <p style="color: #cccccc; text-align: center; font-size: 0.9rem; margin-bottom: 20px;">Select your vehicle and choose required tinting & car care services to get instant estimated total.</p>
 
         <div class="checker-card">
             <!-- Vehicle Selection -->
@@ -167,55 +209,80 @@
             <!-- Vehicle Window Specs -->
             <div id="specsContainer" class="specs-badge-container"></div>
 
-            <!-- Window Options -->
-            <div class="form-group" style="margin-top: 25px;">
-                <label><i class="fas fa-layer-group"></i> Choose Window Areas & Services</label>
-                <div class="option-grid">
-                    <label class="option-card">
-                        <input type="checkbox" id="optFrontDoors" onchange="calculateTotal()">
-                        <span>Front 2 Doors</span>
-                    </label>
-                    <label class="option-card">
-                        <input type="checkbox" id="optRearDoors" onchange="calculateTotal()">
-                        <span>Rear 2 Doors</span>
-                    </label>
-                    <label class="option-card">
-                        <input type="checkbox" id="optRearGlass" onchange="calculateTotal()">
-                        <span>Rear / Dicky Windshield</span>
-                    </label>
-                    <label class="option-card">
-                        <input type="checkbox" id="optQuarterGlass" onchange="calculateTotal()">
-                        <span>Quarter Glasses Set</span>
-                    </label>
-                    <label class="option-card">
-                        <input type="checkbox" id="optFrontSunstrip" onchange="calculateTotal()">
-                        <span>Front Windshield Sunstrip</span>
-                    </label>
-                </div>
+            <!-- Window Tinting Options -->
+            <div class="section-subtitle"><i class="fas fa-film"></i> Window Tinting Options</div>
+            <div class="option-grid">
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optFrontDoors" onchange="calculateTotal()">
+                    <span>Front 2 Doors</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optRearDoors" onchange="calculateTotal()">
+                    <span>Rear 2 Doors</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optRearGlass" onchange="calculateTotal()">
+                    <span>Rear / Dicky Windshield</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optQuarterGlass" onchange="calculateTotal()">
+                    <span>Quarter Glasses Set</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optFrontSunstrip" onchange="calculateTotal()">
+                    <span id="lblSunstrip">Front Windshield Sunstrip</span>
+                </label>
             </div>
 
-            <button class="btn-gold" style="width: 100%; margin-top: 15px; padding: 14px; font-size: 1rem; border-radius: 10px; cursor: pointer;" onclick="calculateTotal()">
-                <i class="fas fa-calculator"></i> Calculate Total Cost
-            </button>
+            <!-- Additional Car Care Services -->
+            <div class="section-subtitle"><i class="fas fa-concierge-bell"></i> Additional Car Care & Detailing Services</div>
+            <div class="option-grid">
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optNanoCeramic" onchange="calculateTotal()">
+                    <span id="lblNano">Nano Ceramic Coating</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optFullWrap" onchange="calculateTotal()">
+                    <span id="lblWrap">Full Body Wrap</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optInterior" onchange="calculateTotal()">
+                    <span id="lblInterior">Interior Detailing</span>
+                </label>
+                <label class="option-card">
+                    <input type="checkbox" class="chk-option" id="optHeadlight" onchange="calculateTotal()">
+                    <span id="lblHeadlight">Headlight Restoration</span>
+                </label>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="action-btns">
+                <button class="btn-reset" onclick="resetAllSelections()">
+                    <i class="fas fa-trash-alt"></i> Clear All
+                </button>
+                <button class="btn-calc" onclick="calculateTotal()">
+                    <i class="fas fa-calculator"></i> Calculate Cost
+                </button>
+            </div>
 
             <!-- Result Box -->
             <div id="resultBox" class="result-box">
-                <h3 style="color: #2ecc71; margin-top: 0;"><i class="fas fa-check-circle"></i> Glass Measurement & Pricing Ready!</h3>
+                <h3 style="color: #2ecc71; margin-top: 0;"><i class="fas fa-check-circle"></i> Service Estimation Ready!</h3>
                 <p id="specsSummaryText" style="color: #ffffff; font-size: 0.9rem;"></p>
 
                 <div class="price-breakdown">
-                    <div>
-                        <span>Total Tint Length Required:</span>
+                    <div id="tintFeetRow">
+                        <span>Total Tint Length:</span>
                         <span id="totalFeetVal" style="color: #d4af37; font-weight: bold;">0 Linear Feet</span>
                     </div>
                     <div class="total">
-                        <span>Total Price:</span>
+                        <span>Estimated Total:</span>
                         <span id="totalCostVal">Rs. 0</span>
                     </div>
                 </div>
 
                 <a id="whatsappBtn" href="#" target="_blank" class="btn-gold-sm" style="display: block; text-decoration: none; padding: 14px; font-size: 0.95rem; background: #25D366; color: white; border: none; border-radius: 10px; text-align: center; margin-top: 15px;">
-                    <i class="fab fa-whatsapp"></i> Book Appointment via WhatsApp
+                    <i class="fab fa-whatsapp"></i> Book Selected Services via WhatsApp
                 </a>
             </div>
         </div>
@@ -243,25 +310,38 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Live Rates Store
+        // Global Rates Store
         window.liveServiceRates = {
             tintPricePerFoot: 1200,
-            frontWindshieldPrice: 3500
+            frontWindshieldPrice: 3500,
+            nanoCeramicPrice: 45000,
+            fullWrapPrice: 150000,
+            interiorDetailingPrice: 18000,
+            headlightPrice: 4500
         };
 
-        // Listen for Admin Price Updates in Realtime
+        // Listen for Admin Price Changes in Realtime
         onValue(ref(db, 'servicePrices'), (snapshot) => {
             if (snapshot.exists()) {
                 window.liveServiceRates = snapshot.val();
+                updateLabelsWithPrices();
                 if (typeof window.calculateTotal === 'function') {
                     window.calculateTotal();
                 }
             }
         });
+
+        function updateLabelsWithPrices() {
+            const r = window.liveServiceRates;
+            if (r.frontWindshieldPrice) document.getElementById('lblSunstrip').innerText = `Front Sunstrip (Rs. ${r.frontWindshieldPrice.toLocaleString()})`;
+            if (r.nanoCeramicPrice) document.getElementById('lblNano').innerText = `Nano Ceramic Coating (Rs. ${r.nanoCeramicPrice.toLocaleString()})`;
+            if (r.fullWrapPrice) document.getElementById('lblWrap').innerText = `Full Body Wrap (Rs. ${r.fullWrapPrice.toLocaleString()})`;
+            if (r.interiorDetailingPrice) document.getElementById('lblInterior').innerText = `Interior Detailing (Rs. ${r.interiorDetailingPrice.toLocaleString()})`;
+            if (r.headlightPrice) document.getElementById('lblHeadlight').innerText = `Headlight Restoration (Rs. ${r.headlightPrice.toLocaleString()})`;
+        }
     </script>
 
     <script>
-        // Vehicle Glass Length Database (In Linear Feet / දිග අඩි)
         const vehicleGlassFeet = {
             "vitz": { frontDoors: 3.5, rearDoors: 3.5, rearGlass: 4.5, quarterGlass: 1.5 },
             "prius": { frontDoors: 4.0, rearDoors: 4.0, rearGlass: 5.5, quarterGlass: 2.0 },
@@ -289,55 +369,82 @@
             const modelName = document.getElementById('vehicleModel').options[document.getElementById('vehicleModel').selectedIndex].text;
             const year = document.getElementById('vehicleYear').value;
 
-            const rates = window.liveServiceRates || {};
-            const pricePerFoot = rates.tintPricePerFoot || 1200;
-            const frontSunstripPrice = rates.frontWindshieldPrice || 3500;
-
+            const r = window.liveServiceRates || {};
             const glassData = vehicleGlassFeet[modelKey];
 
             let totalFeet = 0;
             let grandTotal = 0;
-            let selectedParts = [];
+            let selectedServices = [];
 
+            // Tint calculations
             if (document.getElementById('optFrontDoors').checked) {
                 totalFeet += glassData.frontDoors;
-                selectedParts.push("Front 2 Doors");
+                selectedServices.push("Front 2 Doors Tint");
             }
             if (document.getElementById('optRearDoors').checked) {
                 totalFeet += glassData.rearDoors;
-                selectedParts.push("Rear 2 Doors");
+                selectedServices.push("Rear 2 Doors Tint");
             }
             if (document.getElementById('optRearGlass').checked) {
                 totalFeet += glassData.rearGlass;
-                selectedParts.push("Rear Windshield");
+                selectedServices.push("Rear Windshield Tint");
             }
             if (document.getElementById('optQuarterGlass').checked) {
                 totalFeet += glassData.quarterGlass;
-                selectedParts.push("Quarter Glasses");
+                selectedServices.push("Quarter Glasses Tint");
             }
 
-            // Tint cost based on linear feet
-            grandTotal += (totalFeet * pricePerFoot);
+            grandTotal += (totalFeet * (r.tintPricePerFoot || 1200));
 
-            // Additional fixed service options
+            // Additional fixed services
             if (document.getElementById('optFrontSunstrip').checked) {
-                grandTotal += frontSunstripPrice;
-                selectedParts.push("Front Sunstrip (Rs. " + frontSunstripPrice + ")");
+                grandTotal += (r.frontWindshieldPrice || 3500);
+                selectedServices.push("Front Sunstrip");
+            }
+            if (document.getElementById('optNanoCeramic').checked) {
+                grandTotal += (r.nanoCeramicPrice || 45000);
+                selectedServices.push("Nano Ceramic Coating");
+            }
+            if (document.getElementById('optFullWrap').checked) {
+                grandTotal += (r.fullWrapPrice || 150000);
+                selectedServices.push("Full Body Wrap");
+            }
+            if (document.getElementById('optInterior').checked) {
+                grandTotal += (r.interiorDetailingPrice || 18000);
+                selectedServices.push("Interior Detailing");
+            }
+            if (document.getElementById('optHeadlight').checked) {
+                grandTotal += (r.headlightPrice || 4500);
+                selectedServices.push("Headlight Restoration");
             }
 
-            // UI Updates
             const resultBox = document.getElementById('resultBox');
-            resultBox.style.display = 'block';
+            if (selectedServices.length > 0) {
+                // Add hidden labor fee of LKR 1,000 when any service is selected
+                const HIDDEN_LABOR_FEE = 1000;
+                grandTotal += HIDDEN_LABOR_FEE;
+
+                resultBox.style.display = 'block';
+            } else {
+                resultBox.style.display = 'none';
+                return;
+            }
 
             document.getElementById('totalFeetVal').innerText = `${totalFeet.toFixed(1)} Linear Feet (අඩි)`;
             document.getElementById('totalCostVal').innerText = `Rs. ${grandTotal.toLocaleString('en-US')}`;
 
-            const summaryText = `${modelName} (${year}) - ${selectedParts.length > 0 ? selectedParts.join(', ') : 'No options selected'}`;
+            const summaryText = `${modelName} (${year}) - ${selectedServices.join(', ')}`;
             document.getElementById('specsSummaryText').innerText = summaryText;
 
-            // WhatsApp Message
-            const waMsg = `Hi Mihinadee Motors, I would like to book a Tinting / Car Care Service:\n- Vehicle: ${modelName} (${year})\n- Options: ${selectedParts.length > 0 ? selectedParts.join(', ') : 'None'}\n- Tint Required: ${totalFeet.toFixed(1)} Feet\n- Estimated Total: Rs. ${grandTotal.toLocaleString('en-US')}`;
+            // WhatsApp Link
+            const waMsg = `Hi Mihinadee Motors, I want to book the following services:\n- Vehicle: ${modelName} (${year})\n- Selected Services: ${selectedServices.join(', ')}\n- Total Tint Feet: ${totalFeet.toFixed(1)} Feet\n- Estimated Total: Rs. ${grandTotal.toLocaleString('en-US')}`;
             document.getElementById('whatsappBtn').href = `https://api.whatsapp.com/send/?phone=94752541337&text=${encodeURIComponent(waMsg)}`;
+        };
+
+        window.resetAllSelections = function() {
+            const checkboxes = document.querySelectorAll('.chk-option');
+            checkboxes.forEach(chk => chk.checked = false);
+            document.getElementById('resultBox').style.display = 'none';
         };
 
         function toggleMenu() {
@@ -349,7 +456,6 @@
             }
         }
 
-        // Initial Load
         updateVehicleSpecs();
     </script>
 </body>
