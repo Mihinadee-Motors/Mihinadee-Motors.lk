@@ -9,16 +9,9 @@
 </head>
 <body>
 
-    <!-- iOS Glass Nav Bar with Top Search Bar -->
+    <!-- iOS Glass Nav Bar -->
     <header>
         <div class="logo">MIHINADEE <span>MOTORS</span></div>
-        
-        <!-- Header Top Search Bar -->
-        <div class="header-search">
-            <i class="fas fa-search"></i>
-            <input type="text" placeholder="Search products..." id="searchInput">
-        </div>
-
         <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle Navigation">☰</button>
         <nav id="nav-menu">
             <a href="index.html" class="active">Home</a>
@@ -33,7 +26,15 @@
     <!-- Main Container -->
     <main class="container">
         <section class="products-section">
-            <h2 class="section-title">Our Featured Products</h2>
+            <div class="section-header-wrap">
+                <h2 class="section-title">Our Featured Products</h2>
+                
+                <!-- iOS 26 Glass Search Bar in Section -->
+                <div class="ios-search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search products, tinting, covers...">
+                </div>
+            </div>
             
             <!-- Side-by-Side 2 Column Product Grid -->
             <div class="product-grid-2col">
@@ -99,20 +100,18 @@
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
     </footer>
 
-    <!-- JavaScript for Mobile Menu & Search Filter -->
+    <!-- JavaScript for Mobile Menu & Real-time Search -->
     <script>
         function toggleMenu() {
             var nav = document.getElementById('nav-menu');
             var btn = document.querySelector('.menu-toggle');
             if (nav) {
                 nav.classList.toggle('show');
-                if (btn) {
-                    btn.innerHTML = nav.classList.contains('show') ? '✕' : '☰';
-                }
+                if (btn) btn.innerHTML = nav.classList.contains('show') ? '✕' : '☰';
             }
         }
 
-        // Live Search Filter Function
+        // Live Product Filter
         document.getElementById('searchInput').addEventListener('keyup', function() {
             let filterValue = this.value.toLowerCase();
             let productCards = document.querySelectorAll('.product-card');
