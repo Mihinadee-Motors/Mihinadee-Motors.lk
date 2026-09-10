@@ -3,125 +3,105 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mihinadee Motors | Secret Admin</title>
+    <title>Admin Dashboard | Mihinadee Motors</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Firebase SDKs -->
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-    <style>
-        .admin-card {
-            max-width: 500px;
-            margin: 60px auto;
-            padding: 25px;
-            background: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-            border-top: 5px solid #D4AF37;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
 
     <header>
-        <div class="logo">MIHINADEE <span>MOTORS</span></div>
-        <nav><a href="index.html">Main Website</a></nav>
+        <div class="logo">MIHINADEE <span>ADMIN</span></div>
+        <nav>
+            <a href="index.html">View Site</a>
+        </nav>
     </header>
 
-    <!-- Login Box -->
-    <div id="login-box" class="admin-card" style="text-align: center;">
-        <h2>Secret Admin Login</h2>
-        <p style="margin: 10px 0 20px; color: #666;">Enter password to manage products</p>
-        <input type="password" id="pass-input" placeholder="Password" style="width:100%; padding:12px; margin-bottom:15px; border:1px solid #ccc; border-radius:4px;">
-        <button onclick="loginAdmin()" class="btn-gold" style="width:100%;">Login</button>
-    </div>
-
-    <!-- Admin Panel -->
-    <div id="admin-panel" style="display: none; padding: 20px;">
+    <main class="container">
         <div class="admin-card">
-            <h2 style="text-align: center; margin-bottom: 20px;">+ Add New Product</h2>
-            <form onsubmit="addProduct(event)">
-                <input type="text" id="p-title" placeholder="Product Name" required style="width:100%; padding:10px; margin-bottom:10px;">
-                <input type="text" id="p-price" placeholder="Price (e.g. Rs. 18,500)" required style="width:100%; padding:10px; margin-bottom:10px;">
-                <input type="text" id="p-time" placeholder="Fitting Time (e.g. 1 - 2 Hours)" required style="width:100%; padding:10px; margin-bottom:10px;">
-                <label style="display:block; margin-bottom:5px; font-weight:bold;">Product Image:</label>
-                <input type="file" id="p-img" accept="image/*" required style="margin-bottom:15px;">
-                <button type="submit" class="btn-gold" style="width:100%;">Upload Product</button>
+            <h2>Add New Product / Project</h2>
+            <p class="admin-subtitle">Upload up to 4 images and enter details before confirming.</p>
+
+            <form id="adminForm" onsubmit="handleFormSubmit(event)">
+                <!-- Title Input -->
+                <div class="form-group">
+                    <label for="itemTitle">Title / Name</label>
+                    <input type="text" id="itemTitle" placeholder="e.g. Leather Seat Upgrade" required>
+                </div>
+
+                <!-- Price Input -->
+                <div class="form-group">
+                    <label for="itemPrice">Price / Starting From</label>
+                    <input type="text" id="itemPrice" placeholder="e.g. From LKR 25,000" required>
+                </div>
+
+                <!-- Description Input -->
+                <div class="form-group">
+                    <label for="itemDescription">Description</label>
+                    <textarea id="itemDescription" rows="4" placeholder="Enter detailed description..." required></textarea>
+                </div>
+
+                <!-- Multi Image Upload (Up to 4 Images) -->
+                <div class="form-group">
+                    <label>Upload Images (Select up to 4)</label>
+                    <input type="file" id="imageInput" accept="image/*" multiple onchange="previewImages(event)">
+                    <small class="hint">You can choose up to 4 images at once.</small>
+                </div>
+
+                <!-- Pre-Confirmation Image Preview Grid -->
+                <div class="preview-section">
+                    <label>Image Previews (Before Confirming):</label>
+                    <div id="imagePreviewGrid" class="preview-grid">
+                        <span class="no-preview">No images selected yet.</span>
+                    </div>
+                </div>
+
+                <!-- Confirm Submit Button -->
+                <button type="submit" class="btn-gold-admin">
+                    <i class="fas fa-check-circle"></i> Confirm & Save
+                </button>
             </form>
         </div>
+    </main>
 
-        <h2 class="section-title" style="margin-top: 40px; text-align: center;">Manage <span>Products</span></h2>
-        <div class="grid" id="admin-product-list" style="max-width: 1100px; margin: 0 auto;"></div>
-    </div>
+    <footer>
+        <p>&copy; 2026 Mihinadee Motors. Secret Admin Panel.</p>
+    </footer>
 
     <script>
-        // Firebase Configuration (Using your Firebase URL)
-        const firebaseConfig = {
-            databaseURL: "https://mihindee-motors-default-rtdb.asia-southeast1.firebasedatabase.app/"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
+        let selectedFiles = [];
 
-        function loginAdmin() {
-            if (document.getElementById('pass-input').value === "mihinadee123") {
-                document.getElementById('login-box').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'block';
-                loadAdminProducts();
-            } else {
-                alert("Incorrect Password!");
+        function previewImages(event) {
+            const previewContainer = document.getElementById('imagePreviewGrid');
+            previewContainer.innerHTML = '';
+            selectedFiles = Array.from(event.target.files).slice(0, 4); // Restrict to 4 images max
+
+            if (selectedFiles.length === 0) {
+                previewContainer.innerHTML = '<span class="no-preview">No images selected yet.</span>';
+                return;
             }
-        }
 
-        function loadAdminProducts() {
-            db.ref('products').on('value', (snapshot) => {
-                const list = document.getElementById('admin-product-list');
-                list.innerHTML = '';
-                const data = snapshot.val();
-                if (!data) {
-                    list.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">No uploaded products yet.</p>';
-                    return;
-                }
-                for (let id in data) {
-                    let item = data[id];
-                    list.innerHTML += `
-                        <div class="card" style="text-align:center;">
-                            <img src="${item.img}" style="width:100%; height:180px; object-fit:cover; border-radius:5px;">
-                            <h3 style="margin-top:10px;">${item.title}</h3>
-                            <p style="color:#D4AF37; font-weight:bold;">${item.price}</p>
-                            <p style="font-size:13px; color:#666;">Time: ${item.time}</p>
-                            <button onclick="deleteProduct('${id}')" style="background:#ff4d4d; color:white; border:none; padding:8px 15px; border-radius:4px; margin-top:10px; cursor:pointer;">Delete</button>
-                        </div>
+            selectedFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const previewItem = document.createElement('div');
+                    previewItem.className = 'preview-item';
+                    previewItem.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview ${index + 1}">
+                        <span class="image-number">Image ${index + 1}</span>
                     `;
+                    previewContainer.appendChild(previewItem);
                 }
+                reader.readAsDataURL(file);
             });
         }
 
-        function addProduct(e) {
-            e.preventDefault();
-            const title = document.getElementById('p-title').value;
-            const price = document.getElementById('p-price').value;
-            const time = document.getElementById('p-time').value;
-            const file = document.getElementById('p-img').files[0];
+        function handleFormSubmit(event) {
+            event.preventDefault();
+            const title = document.getElementById('itemTitle').value;
+            const price = document.getElementById('itemPrice').value;
+            const desc = document.getElementById('itemDescription').value;
 
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    db.ref('products').push({
-                        title: title,
-                        price: price,
-                        time: time,
-                        img: evt.target.result
-                    }).then(() => {
-                        alert("Product Added & Synced to All Devices!");
-                    });
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function deleteProduct(id) {
-            if (confirm("Delete this product?")) {
-                db.ref('products/' + id).remove();
-            }
+            alert(`Confirmed!\nTitle: ${title}\nPrice: ${price}\nImages Selected: ${selectedFiles.length}\nDescription: ${desc}`);
         }
     </script>
 </body>
