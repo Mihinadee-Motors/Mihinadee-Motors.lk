@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Vehicle Specs Checker | Mihinadee Motors</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .checker-box {
+            max-width: 700px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-top: 5px solid #D4AF37;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        .ai-result {
+            display: none;
+            margin-top: 25px;
+            background: #111;
+            color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #D4AF37;
+        }
+        .ai-result h3 {
+            color: #D4AF37;
+            margin-top: 0;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+        }
+        .spec-item {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">MIHINADEE <span>MOTORS</span></div>
+        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <nav id="nav-menu">
+            <a href="index.html">Home</a>
+            <a href="services.html">Services</a>
+            <a href="products.html">Products</a>
+            <a href="vehicle-checker.html" class="active">AI Specs Checker</a>
+            <a href="contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <div class="container">
+        <div class="checker-box">
+            <h2 style="text-align: center; color: #111;">🔍 Quick <span style="color:#D4AF37;">AI Vehicle Analyzer</span></h2>
+            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 20px;">Customer ගේ වාහනයේ විස්තර ඇතුළත් කර ක්ෂණික Glass Sizes, Seat Compatibility සහ Pricing ලබාගන්න.</p>
+            
+            <div class="form-group">
+                <label>Vehicle Make & Model (e.g. Toyota Vitz, Suzuki Alto, Honda Vezel)</label>
+                <input type="text" id="veh-model" placeholder="Enter Vehicle Model">
+            </div>
+
+            <div class="form-group">
+                <label>Year of Manufacture</label>
+                <input type="text" id="veh-year" placeholder="e.g. 2018">
+            </div>
+
+            <div class="form-group">
+                <label>Required Work / Service</label>
+                <select id="veh-service">
+                    <option value="Tinting">Tinting (Glasses/Windows Tinting)</option>
+                    <option value="Seat Covers">Seat Covers Fitting</option>
+                    <option value="Full Interior Work">Full Interior (Tint + Seat Covers + Detailing)</option>
+                </select>
+            </div>
+
+            <button onclick="analyzeVehicle()" class="btn-gold" style="width: 100%; border: none; padding: 12px; font-size: 16px; cursor: pointer;">⚡ Analyze Specs Now</button>
+
+            <!-- Result Box -->
+            <div id="ai-result-box" class="ai-result">
+                <h3><i class="fas fa-robot"></i> Vehicle Quick Specs Output</h3>
+                <div class="spec-item" id="res-doors"></div>
+                <div class="spec-item" id="res-specs"></div>
+                <div class="spec-item" id="res-interchange"></div>
+                <div class="spec-item" id="res-price"></div>
+                
+                <button onclick="sendAnalysisToWhatsApp()" class="btn-gold" style="width: 100%; margin-top: 15px; background: #25D366; color: white; border: none; cursor: pointer;">
+                    <i class="fab fa-whatsapp"></i> Send Estimate to WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            document.getElementById('nav-menu').classList.toggle('show');
+        }
+
+        let currentEstimate = {};
+
+        function analyzeVehicle() {
+            const model = document.getElementById('veh-model').value.trim();
+            const year = document.getElementById('veh-year').value.trim();
+            const service = document.getElementById('veh-service').value;
+
+            if(!model) {
+                alert("Please enter vehicle model!");
+                return;
+            }
+
+            const modelLower = model.toLowerCase();
+            let doors = "5-Door Hatchback/Sedan (Standard)";
+            let glassSize = "Medium Glass Area (4 Side Windows + Rear + Quarter Glasses)";
+            let seatCompat = "Standard Front & Rear Split Seats";
+            let estPrice = "Rs. 18,000 - 28,000";
+            let fitTime = "2 - 3 Hours";
+
+            if(modelLower.includes("alto") || modelLower.includes("kwid") || modelLower.includes("maruti")) {
+                doors = "5-Door Compact Hatchback";
+                glassSize = "Small Flat Glass Windows (Easy Tinting)";
+                seatCompat = "Compatible Covers: Alto, Maruti 800, KWID (Front Seats interchangeable)";
+                estPrice = service === "Tinting" ? "Rs. 12,000 - 18,000" : "Rs. 15,000 - 25,000";
+                fitTime = "1.5 - 2 Hours";
+            } else if(modelLower.includes("vitz") || modelLower.includes("passo") || modelLower.includes("swift") || modelLower.includes("wagon")) {
+                doors = "5-Door Hatchback";
+                glassSize = "Medium Curved Windows + Front/Rear Quarter Glasses";
+                seatCompat = "Compatible Covers: Vitz, Passo, Aqua, Fit (Front bucket seats match)";
+                estPrice = service === "Tinting" ? "Rs. 16,000 - 24,000" : "Rs. 22,000 - 35,000";
+                fitTime = "2 - 3 Hours";
+            } else if(modelLower.includes("vezel") || modelLower.includes("grace") || modelLower.includes("allion") || modelLower.includes("premio") || modelLower.includes("axio")) {
+                doors = "4/5-Door Sedan/SUV";
+                glassSize = "Large Curved Glass + Dark Quarter Panels";
+                seatCompat = "Compatible Covers: Grace, Fit GP5, Vezel, Axio Custom Tailored";
+                estPrice = service === "Tinting" ? "Rs. 22,000 - 32,000" : "Rs. 30,000 - 48,000";
+                fitTime = "3 - 4 Hours";
+            }
+
+            currentEstimate = { model, year, service, doors, glassSize, seatCompat, estPrice, fitTime };
+
+            document.getElementById('res-doors').innerHTML = `<strong>🚗 Vehicle Type & Setup:</strong> ${doors}`;
+            document.getElementById('res-specs').innerHTML = service === "Seat Covers" ? 
+                `<strong>🪑 Seat Layout:</strong> ${seatCompat}` : 
+                `<strong>📐 Glass Area & Window Specs:</strong> ${glassSize}`;
+            
+            document.getElementById('res-interchange').innerHTML = `<strong>🔄 Interchangeable/Alternative Models:</strong> ${seatCompat}`;
+            document.getElementById('res-price').innerHTML = `<strong>💰 Estimated Cost & Time:</strong> ${estPrice} (${fitTime})`;
+
+            document.getElementById('ai-result-box').style.display = "block";
+        }
+
+        function sendAnalysisToWhatsApp() {
+            let msg = `*Mihinadee Motors - Vehicle Analysis & Quotation*%0A%0A` +
+                      `*Vehicle:* ${currentEstimate.model} (${currentEstimate.year})%0A` +
+                      `*Requested Service:* ${currentEstimate.service}%0A` +
+                      `*Glass / Body Setup:* ${currentEstimate.doors}%0A` +
+                      `*Details:* ${currentEstimate.glassSize}%0A` +
+                      `*Compatibility:* ${currentEstimate.seatCompat}%0A` +
+                      `*Estimated Cost:* ${currentEstimate.estPrice}%0A` +
+                      `*Fitting Time:* ${currentEstimate.fitTime}%0A%0A` +
+                      `_Would you like to schedule an appointment for this?_`;
+            
+            window.open(`https://api.whatsapp.com/send/?phone=94752541337&text=${msg}`, '_blank');
+        }
+    </script>
+</body>
+</html>
