@@ -3,77 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Specs & Tint Calculator | Mihinadee Motors</title>
+    <title>AI Specs & Fitment Checker | Mihinadee Motors</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .checker-box {
-            max-width: 750px;
-            margin: 30px auto;
-            background: #fff;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            border-top: 5px solid #D4AF37;
+        .checker-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 18px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            margin-top: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
         }
+
+        .selected-product-banner {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
         }
+
         .form-group label {
             display: block;
-            font-weight: bold;
-            margin-bottom: 5px;
-            color: #333;
+            color: #ffffff;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            font-weight: 500;
         }
-        .form-group input, .form-group select {
+
+        .ios-select, .ios-input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: #ffffff;
+            padding: 12px 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            outline: none;
             box-sizing: border-box;
-            font-size: 15px;
+            transition: border-color 0.3s ease;
         }
-        .glass-selection-grid {
+
+        .ios-select:focus, .ios-input:focus {
+            border-color: #d4af37;
+        }
+
+        .checkbox-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
         }
-        .glass-option {
+
+        .checkbox-item {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 12px;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 14px;
-            color: #333;
+            gap: 10px;
             cursor: pointer;
+            transition: border-color 0.2s;
         }
-        .glass-option input {
+
+        .checkbox-item:hover {
+            border-color: rgba(212, 175, 55, 0.4);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            accent-color: #d4af37;
             width: 18px;
             height: 18px;
             cursor: pointer;
         }
-        .ai-result {
+
+        .checkbox-item span {
+            color: #cccccc;
+            font-size: 0.9rem;
+        }
+
+        .result-box {
             display: none;
-            margin-top: 25px;
-            background: #111;
-            color: #fff;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid #d4af37;
+            border-radius: 16px;
             padding: 20px;
-            border-radius: 8px;
-            border: 1px solid #D4AF37;
+            margin-top: 25px;
+            text-align: center;
         }
-        .ai-result h3 {
-            color: #D4AF37;
-            margin-top: 0;
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
+
+        .fitment-status {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2ecc71;
+            margin-bottom: 10px;
         }
-        .spec-item {
-            margin-bottom: 12px;
-            line-height: 1.6;
+
+        .result-price {
+            font-size: 1.8rem;
+            color: #d4af37;
+            font-weight: bold;
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -81,227 +122,187 @@
 
     <header>
         <div class="logo">MIHINADEE <span>MOTORS</span></div>
-        <button class="menu-toggle" onclick="toggleMenu()">☰</button>
+        <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle Navigation">☰</button>
         <nav id="nav-menu">
             <a href="index.html">Home</a>
             <a href="services.html">Services</a>
             <a href="products.html">Products</a>
             <a href="vehicle-checker.html" class="active">AI Specs Checker</a>
-            <a href="projects.html">Projects</a>
+            <a href="gallery.html">Gallery</a>
             <a href="contact.html">Contact</a>
         </nav>
     </header>
 
-    <div class="container">
-        <div class="checker-box">
-            <h2 style="text-align: center; color: #111;">🔍 AI Vehicle Specs & <span style="color:#D4AF37;">Tint Cost Calculator</span></h2>
-            <p style="text-align: center; color: #666; font-size: 14px; margin-bottom: 20px;">Enter vehicle details, select target windows, and calculate required linear length (Feet) and total cost instantly.</p>
-            
-            <div class="form-group">
-                <label>Vehicle Make & Model</label>
-                <input type="text" id="veh-model" placeholder="e.g. Toyota Vitz, Suzuki Alto, Honda Vezel">
+    <main class="container">
+        <section class="checker-section">
+            <div class="section-header-wrap">
+                <h2 class="section-title">AI Compatibility & Cost Estimator</h2>
+                <p style="color: var(--text-muted); margin-top: 5px;">Check if selected item fits your vehicle & calculate total modification cost.</p>
             </div>
 
-            <div class="form-group">
-                <label>Year of Manufacture</label>
-                <input type="text" id="veh-year" placeholder="e.g. 2018">
-            </div>
+            <div class="checker-card">
+                <!-- Selected Product Display Banner -->
+                <div id="productBanner" class="selected-product-banner" style="display: none;">
+                    <div>
+                        <span style="color: #aaa; font-size: 0.8rem;">Selected Product:</span>
+                        <h4 id="selectedProdName" style="color: #fff; margin: 2px 0 0 0; font-size: 1rem;">-</h4>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="color: #aaa; font-size: 0.8rem;">Item Price:</span>
+                        <div id="selectedProdPrice" style="color: #d4af37; font-weight: bold; font-size: 1rem;">Rs. 0</div>
+                    </div>
+                </div>
 
-            <div class="form-group">
-                <label>Service Type</label>
-                <select id="veh-service" onchange="toggleTintOptions()">
-                    <option value="Tinting">Window Tinting</option>
-                    <option value="Seat Covers">Seat Covers Fitting</option>
-                    <option value="Full Interior Work">Full Interior (Tint + Seat Covers)</option>
-                </select>
-            </div>
-
-            <!-- Tint Specific Section -->
-            <div id="tint-custom-section">
-                <label style="font-weight: bold; color: #333;">Select Windows for Tinting:</label>
-                <div class="glass-selection-grid">
-                    <label class="glass-option"><input type="checkbox" id="chk-front-doors" checked> Front Doors (2)</label>
-                    <label class="glass-option"><input type="checkbox" id="chk-rear-doors" checked> Rear Doors (2)</label>
-                    <label class="glass-option"><input type="checkbox" id="chk-front-windshield"> Front Windshield</label>
-                    <label class="glass-option"><input type="checkbox" id="chk-rear-windshield" checked> Rear Windshield</label>
-                    <label class="glass-option"><input type="checkbox" id="chk-quarter-glasses" checked> Quarter Glasses</label>
-                    <label class="glass-option"><input type="checkbox" id="chk-sunroof"> Sunroof Glass</label>
+                <!-- Vehicle Information -->
+                <div class="form-group">
+                    <label><i class="fas fa-car" style="color: #d4af37;"></i> Select Vehicle Type</label>
+                    <select id="vehicleType" class="ios-select">
+                        <option value="car">Car (Sedan / Hatchback)</option>
+                        <option value="van">Van / SUV / Dual Purpose</option>
+                        <option value="threeWheel">Three-Wheeler</option>
+                        <option value="bike">Motorcycle</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Tinting Film Price per Linear Foot / දිග අඩියක් (LKR)</label>
-                    <input type="number" id="tint-linearft-price" value="500" placeholder="e.g. 500">
+                    <label><i class="fas fa-calendar-alt" style="color: #d4af37;"></i> Vehicle Model & Year</label>
+                    <input type="text" id="vehicleModel" class="ios-input" placeholder="e.g. Toyota Vitz 2018 / Alto 2015">
+                </div>
+
+                <!-- Additional Services -->
+                <div class="form-group">
+                    <label><i class="fas fa-tools" style="color: #d4af37;"></i> Select Additional Services & Modifications</label>
+                    <div class="checkbox-grid">
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="3500" data-is-tint="false">
+                            <span>Lock & Winder Repairs</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="4500" data-is-tint="false">
+                            <span>Center Lock Repair</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="18500" data-is-tint="false">
+                            <span>Power Window Conversion</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="12500" data-is-tint="false">
+                            <span>Security Alarm & Remote System</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="8500" data-is-tint="true">
+                            <span>Tinted Glass Installation</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="4500" data-is-tint="false">
+                            <span>Body & Headlight Stickers</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="3000" data-is-tint="false">
+                            <span>Step Board Protection</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="14500" data-is-tint="false">
+                            <span>Custom Seat Covers</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="6500" data-is-tint="false">
+                            <span>Door Visors & Chrome Fittings</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" class="service-check" data-price="5500" data-is-tint="false">
+                            <span>Carpets, Wiper Blades & Accessories</span>
+                        </label>
+                    </div>
+                </div>
+
+                <button onclick="checkFitmentAndCost()" class="btn-gold-sm" style="width: 100%; padding: 14px; font-size: 1rem; margin-top: 10px;">
+                    <i class="fas fa-check-circle"></i> Check Compatibility & Calculate Cost
+                </button>
+
+                <div id="resultBox" class="result-box">
+                    <div id="fitmentStatus" class="fitment-status"><i class="fas fa-shield-alt"></i> 100% Compatible with your Vehicle!</div>
+                    <p id="fitmentMsg" style="color: #ccc; font-size: 0.85rem; margin-bottom: 10px;">This item and selected services can be perfectly fitted to your vehicle.</p>
+                    <h4 style="color: #fff; margin: 15px 0 0 0;">Estimated Total Cost:</h4>
+                    <div id="resultPrice" class="result-price">Rs. 0</div>
+                    <a id="whatsappEstimateBtn" href="#" target="_blank" class="btn-gold-sm" style="padding: 12px 20px; display: inline-flex; margin-top: 10px;">
+                        <i class="fab fa-whatsapp"></i> Book Appointment / Order via WhatsApp
+                    </a>
                 </div>
             </div>
-
-            <button type="button" onclick="analyzeVehicle()" class="btn-gold" style="width: 100%; border: none; padding: 12px; font-size: 16px; cursor: pointer; font-weight: bold;">⚡ Analyze & Calculate Now</button>
-
-            <!-- Result Box -->
-            <div id="ai-result-box" class="ai-result">
-                <h3><i class="fas fa-robot"></i> Vehicle Analysis & Cost Estimation</h3>
-                <div class="spec-item" id="res-doors"></div>
-                <div class="spec-item" id="res-specs"></div>
-                <div class="spec-item" id="res-area"></div>
-                <div class="spec-item" id="res-price"></div>
-                <div class="spec-item" id="res-interchange"></div>
-                
-                <button type="button" onclick="sendAnalysisToWhatsApp()" class="btn-gold" style="width: 100%; margin-top: 15px; background: #25D366; color: white; border: none; cursor: pointer; font-weight: bold;">
-                    <i class="fab fa-whatsapp"></i> Send Estimate to WhatsApp
-                </button>
-            </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
     <footer>
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
     </footer>
 
     <script>
-        function toggleMenu() {
-            var nav = document.getElementById('nav-menu');
-            if (nav) nav.classList.toggle('show');
-        }
+        let productBasePrice = 0;
+        let selectedProductName = '';
 
-        function toggleTintOptions() {
-            var service = document.getElementById('veh-service').value;
-            var tintSec = document.getElementById('tint-custom-section');
-            if (service === "Seat Covers") {
-                tintSec.style.display = "none";
-            } else {
-                tintSec.style.display = "block";
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            selectedProductName = urlParams.get('item');
+            const itemPriceRaw = urlParams.get('price');
+
+            if (selectedProductName && itemPriceRaw) {
+                productBasePrice = parseFloat(itemPriceRaw.replace(/[^0-9.]/g, '')) || 0;
+                document.getElementById('selectedProdName').innerText = selectedProductName;
+                document.getElementById('selectedProdPrice').innerText = 'Rs. ' + productBasePrice.toLocaleString('en-US');
+                document.getElementById('productBanner').style.display = 'flex';
             }
-        }
+        };
 
-        var currentEstimate = {};
-
-        function analyzeVehicle() {
-            var modelElem = document.getElementById('veh-model');
-            var yearElem = document.getElementById('veh-year');
-            var serviceElem = document.getElementById('veh-service');
-            var linearftPriceElem = document.getElementById('tint-linearft-price');
-
-            if (!modelElem || !modelElem.value.trim()) {
-                alert("Please enter vehicle model!");
+        function checkFitmentAndCost() {
+            const modelInput = document.getElementById('vehicleModel').value.trim();
+            if (!modelInput) {
+                alert('Please enter your Vehicle Model & Year.');
                 return;
             }
 
-            var model = modelElem.value.trim();
-            var year = yearElem ? yearElem.value.trim() : "";
-            var service = serviceElem ? serviceElem.value : "Tinting";
-            var pricePerLinearFt = (linearftPriceElem && linearftPriceElem.value) ? parseFloat(linearftPriceElem.value) : 500;
+            let total = productBasePrice;
+            let selectedServices = [];
+            let isTintSelected = false;
 
-            var modelLower = model.toLowerCase();
-            var bodyType = "Standard Hatchback / Sedan";
-            var seatCompat = "Standard Front & Rear Split Seats";
-            var fitTime = "2 - 3 Hours";
+            const checkboxes = document.querySelectorAll('.service-check:checked');
+            checkboxes.forEach(cb => {
+                let price = parseFloat(cb.getAttribute('data-price')) || 0;
+                total += price;
+                
+                let labelText = cb.parentElement.querySelector('span').innerText;
+                selectedServices.push(labelText);
 
-            // Default glass sizes in Linear Feet (දිග අඩි)
-            var lenFrontDoors = 3.5;   // Front 2 doors
-            var lenRearDoors = 3.5;    // Rear 2 doors
-            var lenFrontWind = 4.5;    // Front windshield
-            var lenRearWind = 3.0;     // Rear windshield
-            var lenQuarter = 1.0;      // Quarter glasses
-            var lenSunroof = 2.0;      // Sunroof
+                if (cb.getAttribute('data-is-tint') === 'true') {
+                    isTintSelected = true;
+                }
+            });
 
-            if (modelLower.indexOf("alto") !== -1 || modelLower.indexOf("kwid") !== -1 || modelLower.indexOf("maruti") !== -1 || modelLower.indexOf("mira") !== -1) {
-                bodyType = "Compact Hatchback";
-                seatCompat = "Compatible Covers: Alto, Maruti 800, KWID (Front bucket seats match)";
-                lenFrontDoors = 3.0; lenRearDoors = 3.0; lenFrontWind = 4.0; lenRearWind = 2.5; lenQuarter = 0.8;
-                fitTime = "1.5 - 2 Hours";
-            } else if (modelLower.indexOf("vitz") !== -1 || modelLower.indexOf("passo") !== -1 || modelLower.indexOf("swift") !== -1 || modelLower.indexOf("wagon") !== -1 || modelLower.indexOf("fit") !== -1 || modelLower.indexOf("aqua") !== -1) {
-                bodyType = "Medium Hatchback / Compact SUV";
-                seatCompat = "Compatible Covers: Vitz, Passo, Aqua, Fit GP5 (Bucket seat layout)";
-                lenFrontDoors = 3.5; lenRearDoors = 3.5; lenFrontWind = 4.5; lenRearWind = 3.0; lenQuarter = 1.0;
-                fitTime = "2 - 3 Hours";
-            } else if (modelLower.indexOf("vezel") !== -1 || modelLower.indexOf("grace") !== -1 || modelLower.indexOf("allion") !== -1 || modelLower.indexOf("premio") !== -1 || modelLower.indexOf("axio") !== -1 || modelLower.indexOf("civic") !== -1 || modelLower.indexOf("crv") !== -1) {
-                bodyType = "Luxury Sedan / Full SUV";
-                seatCompat = "Compatible Covers: Grace, Vezel, Axio, Allion Custom Tailored";
-                lenFrontDoors = 4.0; lenRearDoors = 4.0; lenFrontWind = 5.0; lenRearWind = 3.5; lenQuarter = 1.2;
-                fitTime = "3 - 4 Hours";
+            // Hidden Rs. 1,000 addition for Tinted Glass
+            if (isTintSelected) {
+                total += 1000;
             }
 
-            var totalLinearFt = 0;
-            var selectedWindowsList = [];
+            const formattedPrice = 'Rs. ' + total.toLocaleString('en-US');
+            document.getElementById('resultPrice').innerText = formattedPrice;
+            document.getElementById('resultBox').style.display = 'block';
 
-            if (service !== "Seat Covers") {
-                if (document.getElementById('chk-front-doors') && document.getElementById('chk-front-doors').checked) {
-                    totalLinearFt += lenFrontDoors;
-                    selectedWindowsList.push("Front Doors (2)");
-                }
-                if (document.getElementById('chk-rear-doors') && document.getElementById('chk-rear-doors').checked) {
-                    totalLinearFt += lenRearDoors;
-                    selectedWindowsList.push("Rear Doors (2)");
-                }
-                if (document.getElementById('chk-front-windshield') && document.getElementById('chk-front-windshield').checked) {
-                    totalLinearFt += lenFrontWind;
-                    selectedWindowsList.push("Front Windshield");
-                }
-                if (document.getElementById('chk-rear-windshield') && document.getElementById('chk-rear-windshield').checked) {
-                    totalLinearFt += lenRearWind;
-                    selectedWindowsList.push("Rear Windshield");
-                }
-                if (document.getElementById('chk-quarter-glasses') && document.getElementById('chk-quarter-glasses').checked) {
-                    totalLinearFt += lenQuarter;
-                    selectedWindowsList.push("Quarter Glasses");
-                }
-                if (document.getElementById('chk-sunroof') && document.getElementById('chk-sunroof').checked) {
-                    totalLinearFt += lenSunroof;
-                    selectedWindowsList.push("Sunroof Glass");
-                }
-            }
+            const vehicleType = document.getElementById('vehicleType').selectedOptions[0].text;
+            let msgDetails = `Vehicle: ${vehicleType} (${modelInput})`;
+            if (selectedProductName) msgDetails += `%0ASelected Product: ${selectedProductName}`;
+            if (selectedServices.length > 0) msgDetails += `%0AAdditional Services: ${selectedServices.join(', ')}`;
+            msgDetails += `%0AEstimated Total: ${formattedPrice}`;
 
-            var totalCost = totalLinearFt * pricePerLinearFt;
-            var formattedCost = "LKR " + totalCost.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-
-            currentEstimate = {
-                model: model, 
-                year: year, 
-                service: service, 
-                bodyType: bodyType, 
-                seatCompat: seatCompat, 
-                fitTime: fitTime,
-                selectedWindows: selectedWindowsList.join(", ") || "None",
-                totalLinearFt: totalLinearFt.toFixed(1),
-                pricePerLinearFt: pricePerLinearFt,
-                formattedCost: service === "Seat Covers" ? "LKR 25,000 - 45,000 (Based on Material)" : formattedCost
-            };
-
-            document.getElementById('res-doors').innerHTML = '<strong>🚗 Vehicle Profile:</strong> ' + bodyType + ' (' + model + ' ' + year + ')';
-            
-            if (service !== "Seat Covers") {
-                document.getElementById('res-specs').innerHTML = '<strong>🪟 Selected Windows:</strong> ' + currentEstimate.selectedWindows;
-                document.getElementById('res-area').innerHTML = '<strong>📐 Total Required Length:</strong> ' + currentEstimate.totalLinearFt + ' Feet (දිග අඩි)';
-                document.getElementById('res-price').innerHTML = '<strong>💰 Calculated Tinting Cost:</strong> <span style="color:#D4AF37; font-size:18px;">' + formattedCost + '</span> (@ LKR ' + pricePerLinearFt + '/Linear Foot)';
-            } else {
-                document.getElementById('res-specs').innerHTML = '<strong>🪑 Seat Layout & Compatibility:</strong> ' + seatCompat;
-                document.getElementById('res-area').innerHTML = '';
-                document.getElementById('res-price').innerHTML = '<strong>💰 Estimated Seat Covers Price:</strong> <span style="color:#D4AF37; font-size:18px;">' + currentEstimate.formattedCost + '</span>';
-            }
-
-            document.getElementById('res-interchange').innerHTML = '<strong>⏱️ Estimated Fitting Time:</strong> ' + fitTime;
-            document.getElementById('ai-result-box').style.display = "block";
+            document.getElementById('whatsappEstimateBtn').href = `https://api.whatsapp.com/send/?phone=94752541337&text=Hi%20Mihinadee%20Motors,%20I%20checked%20compatibility%20for%20my%20vehicle:%0A${msgDetails}`;
         }
 
-        function sendAnalysisToWhatsApp() {
-            var msg = "*Mihinadee Motors - Vehicle Analysis & Quotation*%0A%0A" +
-                      "*Vehicle:* " + currentEstimate.model + " (" + currentEstimate.year + ")%0A" +
-                      "*Service:* " + currentEstimate.service + "%0A" +
-                      "*Body Type:* " + currentEstimate.bodyType + "%0A";
-            
-            if (currentEstimate.service !== "Seat Covers") {
-                msg += "*Selected Windows:* " + currentEstimate.selectedWindows + "%0A" +
-                       "*Total Length:* " + currentEstimate.totalLinearFt + " Feet (දිග අඩි)%0A" +
-                       "*Price per Linear Foot:* LKR " + currentEstimate.pricePerLinearFt + "%0A" +
-                       "*Estimated Cost:* " + currentEstimate.formattedCost + "%0A";
-            } else {
-                msg += "*Compatibility:* " + currentEstimate.seatCompat + "%0A" +
-                       "*Estimated Price:* " + currentEstimate.formattedCost + "%0A";
+        function toggleMenu() {
+            var nav = document.getElementById('nav-menu');
+            var btn = document.querySelector('.menu-toggle');
+            if (nav) {
+                nav.classList.toggle('show');
+                if (btn) btn.innerHTML = nav.classList.contains('show') ? '✕' : '☰';
             }
-
-            msg += "*Fitting Time:* " + currentEstimate.fitTime + "%0A%0A" +
-                   "_Would you like to schedule an appointment for this?_";
-            
-            window.open("https://wa.me/94752541337?text=" + msg, '_blank');
         }
     </script>
 </body>
