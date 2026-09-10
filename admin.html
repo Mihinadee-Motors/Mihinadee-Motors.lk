@@ -7,152 +7,180 @@
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        .service-pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
+        body {
+            background-color: #0d0d0d;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            padding: 20px;
         }
-        .service-price-card {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(212, 175, 55, 0.2);
-            padding: 15px;
-            border-radius: 12px;
+        .admin-card {
+            max-width: 800px;
+            margin: 20px auto;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
-        .service-price-card label {
-            display: block;
+        .admin-title {
             color: #d4af37;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .section-title {
+            color: #d4af37;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+            padding-bottom: 5px;
+            margin-top: 20px;
+            margin-bottom: 15px;
+        }
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 15px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        .form-group label {
             font-size: 0.85rem;
-            font-weight: bold;
+            color: #cccccc;
             margin-bottom: 5px;
         }
-        .service-price-card input {
-            width: 100%;
+        .form-control {
             padding: 10px;
-            background: #000;
-            border: 1px solid rgba(212, 175, 55, 0.3);
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.4);
             border-radius: 8px;
-            color: #fff;
-            box-sizing: border-box;
+            color: #ffffff;
             outline: none;
         }
-        .service-price-card input:focus {
-            border-color: #d4af37;
+        .btn-save {
+            width: 100%;
+            background: linear-gradient(135deg, #d4af37, #aa820a);
+            color: #000;
+            border: none;
+            padding: 14px;
+            font-weight: bold;
+            font-size: 1rem;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 25px;
+            transition: 0.3s;
+        }
+        .btn-save:hover {
+            background: #ffffff;
+            color: #000;
+        }
+        .status-msg {
+            text-align: center;
+            margin-top: 15px;
+            font-weight: bold;
+            color: #2ecc71;
+            display: none;
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="logo">MIHINADEE <span>ADMIN</span></div>
-        <nav><a href="index.html" target="_blank">View Live Site</a></nav>
-    </header>
+    <div class="admin-card">
+        <h2 class="admin-title"><i class="fas fa-user-shield"></i> Service Price Manager</h2>
 
-    <main class="container">
-        <!-- Service Pricing Settings Section -->
-        <div class="admin-card" style="margin-bottom: 25px;">
-            <h2><i class="fas fa-tags" style="color: #d4af37;"></i> Manage All Service Rates</h2>
-            <p class="admin-subtitle">Update base rates and per linear foot prices across all devices in real-time.</p>
-
-            <form id="servicePricesForm" onsubmit="saveServicePrices(event)">
-                <div class="service-pricing-grid">
-                    <div class="service-price-card">
-                        <label><i class="fas fa-film"></i> Tint Price per Linear Foot (Rs.)</label>
-                        <input type="number" id="tintPricePerFoot" placeholder="e.g. 1200" required>
-                    </div>
-
-                    <div class="service-price-card">
-                        <label><i class="fas fa-car-side"></i> Front Windshield Sunstrip (Rs.)</label>
-                        <input type="number" id="frontWindshieldPrice" placeholder="e.g. 3500" required>
-                    </div>
-
-                    <div class="service-price-card">
-                        <label><i class="fas fa-spray-can"></i> Nano Ceramic Coating (Rs.)</label>
-                        <input type="number" id="nanoCeramicPrice" placeholder="e.g. 45000" required>
-                    </div>
-
-                    <div class="service-price-card">
-                        <label><i class="fas fa-paint-roller"></i> Full Body Wrap Base Rate (Rs.)</label>
-                        <input type="number" id="fullWrapPrice" placeholder="e.g. 150000" required>
-                    </div>
-
-                    <div class="service-price-card">
-                        <label><i class="fas fa-sparkles"></i> Interior Detailing (Rs.)</label>
-                        <input type="number" id="interiorDetailingPrice" placeholder="e.g. 18000" required>
-                    </div>
-
-                    <div class="service-price-card">
-                        <label><i class="fas fa-lightbulb"></i> Headlight Restoration (Rs.)</label>
-                        <input type="number" id="headlightPrice" placeholder="e.g. 4500" required>
-                    </div>
-                </div>
-
-                <button type="submit" class="btn-gold-admin" id="savePricesBtn" style="margin-top: 20px;">
-                    <i class="fas fa-sync-alt"></i> Save & Sync All Service Prices
-                </button>
-            </form>
-        </div>
-
-        <!-- Add / Edit Form -->
-        <div class="admin-card">
-            <h2 id="formTitle">Add New Product</h2>
-            <p class="admin-subtitle">Manage products and live availability via Firebase Realtime Database.</p>
-
-            <form id="productForm" onsubmit="saveProduct(event)">
-                <input type="hidden" id="editDocId" value="">
-
+        <form id="priceForm">
+            <!-- 1. Lock & Winder Repair -->
+            <div class="section-title"><i class="fas fa-key"></i> Lock & Winder Repair</div>
+            <div class="grid-inputs">
                 <div class="form-group">
-                    <label>Title / Product Name</label>
-                    <input type="text" id="pTitle" placeholder="e.g. Nano Ceramic Tinting" required>
+                    <label>Vehicle Lock Repair (Rs.)</label>
+                    <input type="number" id="lockRepairPrice" class="form-control" placeholder="2500">
                 </div>
-
                 <div class="form-group">
-                    <label>Price</label>
-                    <input type="text" id="pPrice" placeholder="e.g. From LKR 15,000" required>
+                    <label>Winder Repair (Rs.)</label>
+                    <input type="number" id="winderRepairPrice" class="form-control" placeholder="3000">
                 </div>
-
                 <div class="form-group">
-                    <label>Description</label>
-                    <textarea id="pDesc" rows="3" placeholder="Enter product details..." required></textarea>
+                    <label>Center Lock Repair (Rs.)</label>
+                    <input type="number" id="centerLockPrice" class="form-control" placeholder="4500">
                 </div>
-
-                <div class="form-group">
-                    <label>Upload Images (Up to 4)</label>
-                    <input type="file" id="pImages" accept="image/*" multiple onchange="previewImages(event)">
-                </div>
-
-                <div class="preview-section">
-                    <label>Selected Previews:</label>
-                    <div id="previewGrid" class="preview-grid">
-                        <span class="no-preview">No images selected</span>
-                    </div>
-                </div>
-
-                <div class="form-group-checkbox">
-                    <label>
-                        <input type="checkbox" id="pOutOfStock"> Mark as Out of Stock
-                    </label>
-                </div>
-
-                <button type="submit" class="btn-gold-admin" id="saveBtn">
-                    <i class="fas fa-plus-circle"></i> Save Product
-                </button>
-            </form>
-        </div>
-
-        <!-- Current Live Products -->
-        <div class="admin-card">
-            <h2>Live Realtime Products</h2>
-            <div id="adminProductList" class="admin-product-list">
-                <p style="text-align: center; font-size: 13px; color: var(--text-muted);">Loading products...</p>
             </div>
-        </div>
-    </main>
+
+            <!-- 2. Upgrades & Security Systems -->
+            <div class="section-title"><i class="fas fa-shield-alt"></i> Upgrades & Security Systems</div>
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>Power Windows Conversion (Rs.)</label>
+                    <input type="number" id="powerWindowPrice" class="form-control" placeholder="28000">
+                </div>
+                <div class="form-group">
+                    <label>Alarm System & Remote (Rs.)</label>
+                    <input type="number" id="alarmSystemPrice" class="form-control" placeholder="12500">
+                </div>
+            </div>
+
+            <!-- 3. Styling & Protection -->
+            <div class="section-title"><i class="fas fa-paint-brush"></i> Styling & Protection</div>
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>Tinted Glass (Rs.)</label>
+                    <input type="number" id="tintedGlassPrice" class="form-control" placeholder="8500">
+                </div>
+                <div class="form-group">
+                    <label>Body Stickers (Rs.)</label>
+                    <input type="number" id="bodyStickersPrice" class="form-control" placeholder="4500">
+                </div>
+                <div class="form-group">
+                    <label>Headlight Stickers (Rs.)</label>
+                    <input type="number" id="headlightStickersPrice" class="form-control" placeholder="2500">
+                </div>
+                <div class="form-group">
+                    <label>Step Board Stickers (Rs.)</label>
+                    <input type="number" id="stepBoardStickersPrice" class="form-control" placeholder="2000">
+                </div>
+            </div>
+
+            <!-- 4. Interior & Exterior Fitting -->
+            <div class="section-title"><i class="fas fa-car-side"></i> Interior & Exterior Fitting</div>
+            <div class="grid-inputs">
+                <div class="form-group">
+                    <label>Seat Covers (Rs.)</label>
+                    <input type="number" id="seatCoversPrice" class="form-control" placeholder="15000">
+                </div>
+                <div class="form-group">
+                    <label>Door Visors (Rs.)</label>
+                    <input type="number" id="doorVisorsPrice" class="form-control" placeholder="3500">
+                </div>
+                <div class="form-group">
+                    <label>Chrome Items (Rs.)</label>
+                    <input type="number" id="chromeItemsPrice" class="form-control" placeholder="4000">
+                </div>
+                <div class="form-group">
+                    <label>Carpets (Rs.)</label>
+                    <input type="number" id="carpetsPrice" class="form-control" placeholder="4500">
+                </div>
+                <div class="form-group">
+                    <label>Door Handles (Rs.)</label>
+                    <input type="number" id="doorHandlesPrice" class="form-control" placeholder="2500">
+                </div>
+                <div class="form-group">
+                    <label>Wiper Blades (Rs.)</label>
+                    <input type="number" id="wiperBladesPrice" class="form-control" placeholder="1800">
+                </div>
+                <div class="form-group">
+                    <label>Badges & Clips (Rs.)</label>
+                    <input type="number" id="badgesClipsPrice" class="form-control" placeholder="1200">
+                </div>
+            </div>
+
+            <button type="button" class="btn-save" onclick="savePrices()"><i class="fas fa-save"></i> Save Prices to Firebase</button>
+            <div id="statusMsg" class="status-msg">Prices updated successfully!</div>
+        </form>
+    </div>
 
     <!-- Firebase Realtime Database SDK -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getDatabase, ref, push, set, update, remove, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBzyvbPzwrbO_-S1q0kQC1BIIcWONSiCFE",
@@ -167,175 +195,60 @@
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        let currentImageBase64List = [];
-        let fetchedProducts = {};
-
-        // 1. Fetch & Auto-Fill Current Service Prices from Firebase
+        // Fetch existing prices from Firebase and populate inputs
         onValue(ref(db, 'servicePrices'), (snapshot) => {
             if (snapshot.exists()) {
-                const rates = snapshot.val();
-                if (rates.tintPricePerFoot) document.getElementById('tintPricePerFoot').value = rates.tintPricePerFoot;
-                if (rates.frontWindshieldPrice) document.getElementById('frontWindshieldPrice').value = rates.frontWindshieldPrice;
-                if (rates.nanoCeramicPrice) document.getElementById('nanoCeramicPrice').value = rates.nanoCeramicPrice;
-                if (rates.fullWrapPrice) document.getElementById('fullWrapPrice').value = rates.fullWrapPrice;
-                if (rates.interiorDetailingPrice) document.getElementById('interiorDetailingPrice').value = rates.interiorDetailingPrice;
-                if (rates.headlightPrice) document.getElementById('headlightPrice').value = rates.headlightPrice;
+                const data = snapshot.val();
+                document.getElementById('lockRepairPrice').value = data.lockRepairPrice || 2500;
+                document.getElementById('winderRepairPrice').value = data.winderRepairPrice || 3000;
+                document.getElementById('centerLockPrice').value = data.centerLockPrice || 4500;
+                document.getElementById('powerWindowPrice').value = data.powerWindowPrice || 28000;
+                document.getElementById('alarmSystemPrice').value = data.alarmSystemPrice || 12500;
+                document.getElementById('tintedGlassPrice').value = data.tintedGlassPrice || 8500;
+                document.getElementById('bodyStickersPrice').value = data.bodyStickersPrice || 4500;
+                document.getElementById('headlightStickersPrice').value = data.headlightStickersPrice || 2500;
+                document.getElementById('stepBoardStickersPrice').value = data.stepBoardStickersPrice || 2000;
+                document.getElementById('seatCoversPrice').value = data.seatCoversPrice || 15000;
+                document.getElementById('doorVisorsPrice').value = data.doorVisorsPrice || 3500;
+                document.getElementById('chromeItemsPrice').value = data.chromeItemsPrice || 4000;
+                document.getElementById('carpetsPrice').value = data.carpetsPrice || 4500;
+                document.getElementById('doorHandlesPrice').value = data.doorHandlesPrice || 2500;
+                document.getElementById('wiperBladesPrice').value = data.wiperBladesPrice || 1800;
+                document.getElementById('badgesClipsPrice').value = data.badgesClipsPrice || 1200;
             }
         });
 
-        // 2. Save Service Prices Function
-        window.saveServicePrices = async function(e) {
-            e.preventDefault();
-            const btn = document.getElementById('savePricesBtn');
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving Rates...';
-
-            const serviceRates = {
-                tintPricePerFoot: parseFloat(document.getElementById('tintPricePerFoot').value) || 0,
-                frontWindshieldPrice: parseFloat(document.getElementById('frontWindshieldPrice').value) || 0,
-                nanoCeramicPrice: parseFloat(document.getElementById('nanoCeramicPrice').value) || 0,
-                fullWrapPrice: parseFloat(document.getElementById('fullWrapPrice').value) || 0,
-                interiorDetailingPrice: parseFloat(document.getElementById('interiorDetailingPrice').value) || 0,
-                headlightPrice: parseFloat(document.getElementById('headlightPrice').value) || 0,
-                updatedAt: new Date().toISOString()
+        // Save new prices to Firebase
+        window.savePrices = function() {
+            const updatedData = {
+                lockRepairPrice: Number(document.getElementById('lockRepairPrice').value),
+                winderRepairPrice: Number(document.getElementById('winderRepairPrice').value),
+                centerLockPrice: Number(document.getElementById('centerLockPrice').value),
+                powerWindowPrice: Number(document.getElementById('powerWindowPrice').value),
+                alarmSystemPrice: Number(document.getElementById('alarmSystemPrice').value),
+                tintedGlassPrice: Number(document.getElementById('tintedGlassPrice').value),
+                bodyStickersPrice: Number(document.getElementById('bodyStickersPrice').value),
+                headlightStickersPrice: Number(document.getElementById('headlightStickersPrice').value),
+                stepBoardStickersPrice: Number(document.getElementById('stepBoardStickersPrice').value),
+                seatCoversPrice: Number(document.getElementById('seatCoversPrice').value),
+                doorVisorsPrice: Number(document.getElementById('doorVisorsPrice').value),
+                chromeItemsPrice: Number(document.getElementById('chromeItemsPrice').value),
+                carpetsPrice: Number(document.getElementById('carpetsPrice').value),
+                doorHandlesPrice: Number(document.getElementById('doorHandlesPrice').value),
+                wiperBladesPrice: Number(document.getElementById('wiperBladesPrice').value),
+                badgesClipsPrice: Number(document.getElementById('badgesClipsPrice').value)
             };
 
-            try {
-                await set(ref(db, 'servicePrices'), serviceRates);
-                alert("All Service Prices updated successfully across all devices!");
-            } catch (err) {
-                console.error("Error updating prices: ", err);
-                alert("Failed to save service prices: " + err.message);
-            } finally {
-                btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-sync-alt"></i> Save & Sync All Service Prices';
-            }
+            set(ref(db, 'servicePrices'), updatedData)
+                .then(() => {
+                    const statusMsg = document.getElementById('statusMsg');
+                    statusMsg.style.display = 'block';
+                    setTimeout(() => { statusMsg.style.display = 'none'; }, 3000);
+                })
+                .catch((error) => {
+                    alert("Error saving prices: " + error.message);
+                });
         };
-
-        window.previewImages = function(e) {
-            const files = Array.from(e.target.files).slice(0, 4);
-            const grid = document.getElementById('previewGrid');
-            grid.innerHTML = '';
-            currentImageBase64List = [];
-
-            if (files.length === 0) {
-                grid.innerHTML = '<span class="no-preview">No images selected</span>';
-                return;
-            }
-
-            files.forEach((file, idx) => {
-                const reader = new FileReader();
-                reader.onload = function(evt) {
-                    currentImageBase64List.push(evt.target.result);
-                    grid.innerHTML += `
-                        <div class="preview-item">
-                            <img src="${evt.target.result}">
-                            <span class="image-number">Img ${idx + 1}</span>
-                        </div>`;
-                }
-                reader.readAsDataURL(file);
-            });
-        };
-
-        window.saveProduct = async function(e) {
-            e.preventDefault();
-            const saveBtn = document.getElementById('saveBtn');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-
-            const editDocId = document.getElementById('editDocId').value;
-            const title = document.getElementById('pTitle').value;
-            const price = document.getElementById('pPrice').value;
-            const desc = document.getElementById('pDesc').value;
-            const outOfStock = document.getElementById('pOutOfStock').checked;
-
-            let images = currentImageBase64List;
-            if (images.length === 0 && editDocId && fetchedProducts[editDocId]) {
-                images = fetchedProducts[editDocId].images || [];
-            } else if (images.length === 0) {
-                images = ["https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80"];
-            }
-
-            const productData = { title, price, desc, images, outOfStock };
-
-            try {
-                if (editDocId) {
-                    await update(ref(db, 'products/' + editDocId), productData);
-                } else {
-                    const newRef = push(ref(db, 'products'));
-                    await set(newRef, productData);
-                }
-                resetForm();
-            } catch (error) {
-                console.error("Firebase Error: ", error);
-                alert("Error saving data!");
-            } finally {
-                saveBtn.disabled = false;
-            }
-        };
-
-        // Live Realtime Listener for Products
-        onValue(ref(db, 'products'), (snapshot) => {
-            const container = document.getElementById('adminProductList');
-            container.innerHTML = '';
-            fetchedProducts = snapshot.val() || {};
-
-            if (!snapshot.exists()) {
-                container.innerHTML = '<p style="text-align: center; font-size: 13px; color: var(--text-muted);">No products found in Database.</p>';
-                return;
-            }
-
-            Object.keys(fetchedProducts).forEach((id) => {
-                const p = fetchedProducts[id];
-                container.innerHTML += `
-                    <div class="admin-item-card ${p.outOfStock ? 'item-out' : ''}">
-                        <img src="${(p.images && p.images[0]) ? p.images[0] : ''}" alt="Img">
-                        <div class="admin-item-info">
-                            <h4>${p.title} ${p.outOfStock ? '<span class="badge-out">[Out of Stock]</span>' : ''}</h4>
-                            <p>${p.price}</p>
-                        </div>
-                        <div class="admin-item-actions">
-                            <button onclick="toggleStock('${id}', ${p.outOfStock})" class="btn-stock">
-                                ${p.outOfStock ? 'Set Available' : 'Set Out of Stock'}
-                            </button>
-                            <button onclick="editProduct('${id}')" class="btn-edit"><i class="fas fa-edit"></i></button>
-                            <button onclick="deleteProduct('${id}')" class="btn-delete"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>`;
-            });
-        });
-
-        window.editProduct = function(id) {
-            const p = fetchedProducts[id];
-            if (!p) return;
-            document.getElementById('editDocId').value = id;
-            document.getElementById('pTitle').value = p.title || '';
-            document.getElementById('pPrice').value = p.price || '';
-            document.getElementById('pDesc').value = p.desc || '';
-            document.getElementById('pOutOfStock').checked = !!p.outOfStock;
-            document.getElementById('formTitle').innerText = "Edit Product";
-            document.getElementById('saveBtn').innerHTML = `<i class="fas fa-save"></i> Update Product`;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
-        window.deleteProduct = async function(id) {
-            if (confirm("Delete this product permanently?")) {
-                await remove(ref(db, 'products/' + id));
-            }
-        };
-
-        window.toggleStock = async function(id, currentStatus) {
-            await update(ref(db, 'products/' + id), { outOfStock: !currentStatus });
-        };
-
-        function resetForm() {
-            document.getElementById('productForm').reset();
-            document.getElementById('editDocId').value = "";
-            document.getElementById('formTitle').innerText = "Add New Product";
-            document.getElementById('saveBtn').innerHTML = `<i class="fas fa-plus-circle"></i> Save Product`;
-            document.getElementById('previewGrid').innerHTML = '<span class="no-preview">No images selected</span>';
-            currentImageBase64List = [];
-        }
     </script>
 </body>
 </html>
