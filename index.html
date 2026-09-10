@@ -6,6 +6,127 @@
     <title>Mihinadee Motors | Premium Car Care & Modifications</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Side-by-Side Product Grid for Mobile & Desktop */
+        .product-grid-2col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 14px;
+            padding: 10px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Image Carousel Slider */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 130px;
+            overflow: hidden;
+            border-radius: 10px;
+            margin-bottom: 8px;
+        }
+
+        .slider-track {
+            display: flex;
+            height: 100%;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .slider-track::-webkit-scrollbar {
+            display: none; /* Chrome/Safari */
+        }
+
+        .slider-track img {
+            min-width: 100%;
+            height: 100%;
+            object-fit: cover;
+            scroll-snap-align: start;
+        }
+
+        .product-info {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-info h3 {
+            font-size: 0.85rem;
+            color: #ffffff;
+            margin: 0 0 4px 0;
+            line-height: 1.2;
+        }
+
+        .product-info p {
+            font-size: 0.75rem;
+            color: #cccccc;
+            margin-bottom: 8px;
+            line-height: 1.3;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .price {
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: #d4af37;
+            margin-bottom: 8px;
+        }
+
+        .btn-gold-sm {
+            background: linear-gradient(135deg, #d4af37, #aa820a);
+            color: #000;
+            border: none;
+            padding: 6px 8px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            margin-top: auto;
+        }
+
+        /* Floating WhatsApp Button */
+        .floating-whatsapp {
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            background-color: #25d366;
+            color: #ffffff;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+            z-index: 9999;
+            transition: transform 0.3s ease;
+            text-decoration: none;
+        }
+
+        .floating-whatsapp:hover {
+            transform: scale(1.1);
+        }
+    </style>
 </head>
 <body>
 
@@ -17,11 +138,8 @@
             <a href="services.html">Services</a>
             <a href="products.html">Products</a>
             <a href="vehicle-checker.html">AI Specs Checker</a>
-            <a href="projects.html">Projects</a>
+            <a href="gallery.html">Gallery</a>
             <a href="contact.html">Contact</a>
-            <a href="#" onclick="openCart(); return false;" class="cart-link">
-                <i class="fas fa-shopping-cart"></i> Cart (<span id="cartCount">0</span>)
-            </a>
         </nav>
     </header>
 
@@ -29,7 +147,7 @@
         <section class="products-section">
             <div class="section-header-wrap">
                 <h2 class="section-title">Our Featured Products</h2>
-                <div class="ios-search-bar">
+                <div class="ios-search-bar" style="margin-top: 10px;">
                     <i class="fas fa-search"></i>
                     <input type="text" id="searchInput" placeholder="Search products...">
                 </div>
@@ -42,7 +160,7 @@
     </main>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://wa.me/94752541337" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
+    <a href="https://wa.me/94752541337" class="floating-whatsapp" target="_blank" aria-label="Contact on WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -80,31 +198,31 @@
             const data = snapshot.val();
             Object.keys(data).forEach((key) => {
                 const p = data[key];
-                const imgUrl = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80';
+                const images = (p.images && p.images.length > 0) ? p.images : ['https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=600&q=80'];
                 const isOut = p.outOfStock;
-                const pDesc = p.desc ? p.desc : 'High quality automotive product for your vehicle.';
+                const pDesc = p.desc ? p.desc : 'High quality automotive product.';
+
+                // Build image slider elements
+                let imgHtml = '';
+                images.forEach(img => {
+                    imgHtml += `<img src="${img}" alt="${p.title}">`;
+                });
 
                 grid.innerHTML += `
                     <div class="product-card ${isOut ? 'out-of-stock-card' : ''}">
-                        <img src="${imgUrl}" alt="${p.title}">
+                        <div class="slider-container">
+                            <div class="slider-track">
+                                ${imgHtml}
+                            </div>
+                        </div>
                         <div class="product-info">
-                            <h3>${p.title} ${isOut ? '<span class="out-tag">Out of Stock</span>' : ''}</h3>
+                            <h3>${p.title} ${isOut ? '<br><span style="color:#e74c3c; font-size: 0.7rem;">(Out of Stock)</span>' : ''}</h3>
                             <p>${pDesc}</p>
                             <span class="price">${p.price}</span>
-                            
-                            <div class="product-actions">
-                                ${isOut 
-                                    ? `<button class="btn-gold-sm disabled-btn" disabled>Out of Stock</button>` 
-                                    : `
-                                        <a href="https://wa.me/94752541337?text=I%20am%20interested%20in%20${encodeURIComponent(p.title)}" class="btn-gold-sm" target="_blank">
-                                            <i class="fab fa-whatsapp"></i> Order
-                                        </a>
-                                        <button onclick="addToCart('${p.title}', '${p.price}')" class="btn-gold-sm">
-                                            <i class="fas fa-shopping-cart"></i>
-                                        </button>
-                                    `
-                                }
-                            </div>
+                            ${isOut 
+                                ? `<button class="btn-gold-sm" style="opacity: 0.5; cursor: not-allowed;" disabled>Out of Stock</button>` 
+                                : `<a href="https://wa.me/94752541337?text=I%20am%20interested%20in%20${encodeURIComponent(p.title)}" class="btn-gold-sm" target="_blank"><i class="fab fa-whatsapp"></i> Inquire</a>`
+                            }
                         </div>
                     </div>`;
             });
@@ -121,29 +239,12 @@
     </script>
 
     <script>
-        let cartItems = [];
-
         function toggleMenu() {
             var nav = document.getElementById('nav-menu');
             var btn = document.querySelector('.menu-toggle');
             if (nav) {
                 nav.classList.toggle('show');
                 if (btn) btn.innerHTML = nav.classList.contains('show') ? '✕' : '☰';
-            }
-        }
-
-        function addToCart(title, price) {
-            cartItems.push({ title, price });
-            document.getElementById('cartCount').innerText = cartItems.length;
-            alert(title + " added to your cart!");
-        }
-
-        function openCart() {
-            if (cartItems.length === 0) {
-                alert("Your cart is empty!");
-            } else {
-                let itemList = cartItems.map(i => i.title + " (" + i.price + ")").join("\n");
-                alert("Items in Cart:\n\n" + itemList);
             }
         }
     </script>
