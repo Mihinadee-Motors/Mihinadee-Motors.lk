@@ -74,6 +74,19 @@
             background: #ffffff;
             color: #000;
         }
+        .image-preview-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .image-preview-container img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            border: 1px solid #d4af37;
+        }
         .product-list {
             margin-top: 20px;
             display: grid;
@@ -85,14 +98,18 @@
             border: 1px solid rgba(212, 175, 55, 0.2);
             padding: 15px;
             border-radius: 10px;
-            position: relative;
+        }
+        .product-item .img-gallery {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            margin-bottom: 10px;
         }
         .product-item img {
             width: 100%;
-            height: 140px;
+            height: 120px;
             object-fit: cover;
             border-radius: 6px;
-            margin-bottom: 10px;
         }
         .product-item h4 {
             margin: 5px 0;
@@ -108,15 +125,6 @@
             gap: 10px;
             margin-top: 10px;
         }
-        .btn-edit {
-            background: #27ae60;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            flex: 1;
-        }
         .btn-delete {
             background: #c0392b;
             color: white;
@@ -124,7 +132,7 @@
             padding: 6px 12px;
             border-radius: 5px;
             cursor: pointer;
-            flex: 1;
+            width: 100%;
         }
         .status-msg {
             text-align: center;
@@ -140,10 +148,9 @@
     <div class="admin-card">
         <h2 class="admin-title"><i class="fas fa-user-shield"></i> Mihinadee Motors Admin Dashboard</h2>
 
-        <!-- SECTION 1: Product Upload & Edit -->
-        <div class="section-title"><i class="fas fa-box-open"></i> Add / Edit Product</div>
+        <!-- SECTION 1: Product Upload -->
+        <div class="section-title"><i class="fas fa-box-open"></i> Upload New Product (Multiple Images)</div>
         <form id="productForm">
-            <input type="hidden" id="productId">
             <div class="grid-inputs">
                 <div class="form-group">
                     <label>Product Name</label>
@@ -157,45 +164,27 @@
                     <label>Price (Rs.)</label>
                     <input type="number" id="prodPrice" class="form-control" placeholder="12500" required>
                 </div>
-                <div class="form-group">
-                    <label>Image URL</label>
-                    <input type="text" id="prodImage" class="form-control" placeholder="https://..." required>
-                </div>
             </div>
+            
+            <!-- File Browse (Multiple Images) -->
+            <div class="form-group">
+                <label><i class="fas fa-images"></i> Select Images (Select up to 10+ images)</label>
+                <input type="file" id="prodImages" class="form-control" accept="image/*" multiple required>
+                <div id="previewContainer" class="image-preview-container"></div>
+            </div>
+
             <div class="form-group">
                 <label>Description</label>
                 <textarea id="prodDesc" class="form-control" rows="3" placeholder="Enter product details..."></textarea>
             </div>
-            <button type="button" class="btn-action" id="saveProductBtn"><i class="fas fa-upload"></i> Save Product</button>
+            <button type="button" class="btn-action" id="saveProductBtn"><i class="fas fa-upload"></i> Upload & Sync Product</button>
         </form>
 
-        <!-- SECTION 2: Product Preview & Management -->
-        <div class="section-title"><i class="fas fa-list"></i> Product Inventory Preview</div>
+        <!-- SECTION 2: Product Inventory & Realtime Preview -->
+        <div class="section-title"><i class="fas fa-list"></i> Realtime Product Inventory</div>
         <div id="productList" class="product-list">
             <p style="text-align:center; width:100%;">Loading products...</p>
         </div>
-
-        <!-- SECTION 3: Service Price Manager -->
-        <div class="section-title"><i class="fas fa-tags"></i> Quick Service Price Manager</div>
-        <div class="grid-inputs">
-            <div class="form-group">
-                <label>Lock Repair (Rs.)</label>
-                <input type="number" id="lockRepairPrice" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Winder Repair (Rs.)</label>
-                <input type="number" id="winderRepairPrice" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Alarm System (Rs.)</label>
-                <input type="number" id="alarmSystemPrice" class="form-control">
-            </div>
-            <div class="form-group">
-                <label>Seat Covers (Rs.)</label>
-                <input type="number" id="seatCoversPrice" class="form-control">
-            </div>
-        </div>
-        <button type="button" class="btn-action" id="savePricesBtn"><i class="fas fa-save"></i> Save Service Prices</button>
 
         <div id="statusMsg" class="status-msg">Operation completed successfully!</div>
     </div>
@@ -204,21 +193,82 @@
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, push, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+        import { getStorage, ref as storageRef, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
         const firebaseConfig = {
             apiKey: "AIzaSyBzyvbPzwrbO_-S1q0kQC1BIIcWONSiCFE",
             authDomain: "mihindee-motors.firebaseapp.com",
             databaseURL: "https://mihindee-motors-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "mihindee-motors",
-            storageBucket: "mihindee-motors.firebasestorage.app",
+            storageBucket: "mihindee-motors.appspot.com",
             messagingSenderId: "155394892185",
             appId: "1:155394892185:web:9c0a7963685edb78bcf308"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
+        const storage = getStorage(app);
 
-        // 1. Fetch & Preview Products
+        // Preview Selected Local Images
+        const fileInput = document.getElementById('prodImages');
+        const previewContainer = document.getElementById('previewContainer');
+
+        fileInput.addEventListener('change', () => {
+            previewContainer.innerHTML = '';
+            const files = Array.from(fileInput.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    previewContainer.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        });
+
+        // Upload Product & Images
+        document.getElementById('saveProductBtn').addEventListener('click', async () => {
+            const name = document.getElementById('prodName').value;
+            const category = document.getElementById('prodCategory').value;
+            const price = Number(document.getElementById('prodPrice').value);
+            const description = document.getElementById('prodDesc').value;
+            const files = fileInput.files;
+
+            if (!name || !price || files.length === 0) {
+                alert('Please fill all required fields and select at least one image.');
+                return;
+            }
+
+            const btn = document.getElementById('saveProductBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+
+            try {
+                const imageUrls = [];
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    const sRef = storageRef(storage, `products/${Date.now()}_${file.name}`);
+                    await uploadBytes(sRef, file);
+                    const url = await getDownloadURL(sRef);
+                    imageUrls.push(url);
+                }
+
+                const productData = { name, category, price, description, images: imageUrls };
+                await push(ref(db, 'products'), productData);
+
+                showSuccess();
+                document.getElementById('productForm').reset();
+                previewContainer.innerHTML = '';
+            } catch (error) {
+                alert('Upload Error: ' + error.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-upload"></i> Upload & Sync Product';
+            }
+        });
+
+        // Realtime Sync & Render Products Across Devices
         const productListEl = document.getElementById('productList');
         onValue(ref(db, 'products'), (snapshot) => {
             productListEl.innerHTML = '';
@@ -226,15 +276,21 @@
                 const data = snapshot.val();
                 Object.keys(data).forEach(id => {
                     const item = data[id];
+                    const imgs = item.images || [];
+                    let imgGalleryHtml = '<div class="img-gallery">';
+                    imgs.forEach(url => {
+                        imgGalleryHtml += `<img src="${url}" alt="Product">`;
+                    });
+                    imgGalleryHtml += '</div>';
+
                     productListEl.innerHTML += `
                         <div class="product-item">
-                            <img src="${item.image || 'https://via.placeholder.com/150'}" alt="${item.name}">
+                            ${imgGalleryHtml}
                             <h4>${item.name}</h4>
                             <p><strong>Category:</strong> ${item.category}</p>
                             <p><strong>Price:</strong> Rs. ${item.price}</p>
                             <p>${item.description || ''}</p>
                             <div class="btn-group">
-                                <button class="btn-edit" onclick="editProduct('${id}', '${item.name}', '${item.category}', ${item.price}, '${item.image}', '${item.description || ''}')"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="btn-delete" onclick="deleteProduct('${id}')"><i class="fas fa-trash"></i> Delete</button>
                             </div>
                         </div>
@@ -245,69 +301,11 @@
             }
         });
 
-        // 2. Add / Edit Product
-        document.getElementById('saveProductBtn').addEventListener('click', () => {
-            const id = document.getElementById('productId').value;
-            const name = document.getElementById('prodName').value;
-            const category = document.getElementById('prodCategory').value;
-            const price = Number(document.getElementById('prodPrice').value);
-            const image = document.getElementById('prodImage').value;
-            const description = document.getElementById('prodDesc').value;
-
-            if (!name || !price) {
-                alert('Please enter product name and price!');
-                return;
-            }
-
-            const productData = { name, category, price, image, description };
-
-            if (id) {
-                set(ref(db, 'products/' + id), productData).then(showSuccess);
-            } else {
-                push(ref(db, 'products'), productData).then(showSuccess);
-            }
-
-            document.getElementById('productForm').reset();
-            document.getElementById('productId').value = '';
-        });
-
-        // Global functions for Edit & Delete
-        window.editProduct = (id, name, category, price, image, desc) => {
-            document.getElementById('productId').value = id;
-            document.getElementById('prodName').value = name;
-            document.getElementById('prodCategory').value = category;
-            document.getElementById('prodPrice').value = price;
-            document.getElementById('prodImage').value = image;
-            document.getElementById('prodDesc').value = desc;
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        };
-
         window.deleteProduct = (id) => {
             if (confirm('Are you sure you want to delete this product?')) {
                 remove(ref(db, 'products/' + id)).then(showSuccess);
             }
         };
-
-        // 3. Service Prices Load & Save
-        onValue(ref(db, 'servicePrices'), (snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                document.getElementById('lockRepairPrice').value = data.lockRepairPrice || 2500;
-                document.getElementById('winderRepairPrice').value = data.winderRepairPrice || 3000;
-                document.getElementById('alarmSystemPrice').value = data.alarmSystemPrice || 12500;
-                document.getElementById('seatCoversPrice').value = data.seatCoversPrice || 15000;
-            }
-        });
-
-        document.getElementById('savePricesBtn').addEventListener('click', () => {
-            const servicePrices = {
-                lockRepairPrice: Number(document.getElementById('lockRepairPrice').value),
-                winderRepairPrice: Number(document.getElementById('winderRepairPrice').value),
-                alarmSystemPrice: Number(document.getElementById('alarmSystemPrice').value),
-                seatCoversPrice: Number(document.getElementById('seatCoversPrice').value)
-            };
-            set(ref(db, 'servicePrices'), servicePrices).then(showSuccess);
-        });
 
         function showSuccess() {
             const statusMsg = document.getElementById('statusMsg');
