@@ -23,11 +23,19 @@
             -webkit-backdrop-filter: blur(12px);
             text-align: center;
             transition: all 0.3s ease;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: inherit;
+            cursor: pointer;
         }
 
         .contact-card:hover {
             border-color: #d4af37;
             transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.15);
         }
 
         .contact-card i {
@@ -37,21 +45,33 @@
             background: rgba(212, 175, 55, 0.1);
             padding: 16px;
             border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .contact-card h3 {
             color: #ffffff;
             margin-bottom: 8px;
+            font-size: 1.1rem;
         }
 
-        .contact-card p, .contact-card a {
+        .contact-card p {
             color: #cccccc;
-            text-decoration: none;
+            margin: 0;
             font-size: 0.95rem;
         }
 
-        .contact-card a:hover {
+        .contact-card span.action-btn {
+            margin-top: 12px;
+            font-size: 0.8rem;
             color: #d4af37;
+            font-weight: bold;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
         }
     </style>
 </head>
@@ -65,7 +85,7 @@
             <a href="services.html">Services</a>
             <a href="products.html">Products</a>
             <a href="vehicle-checker.html">AI Specs Checker</a>
-            <a href="projects.html">Projects</a>
+            <a href="gallery.html">Gallery</a>
             <a href="contact.html" class="active">Contact</a>
         </nav>
     </header>
@@ -78,23 +98,29 @@
             </div>
 
             <div class="contact-grid">
-                <div class="contact-card">
+                <!-- Location Card (Opens Google Maps) -->
+                <a href="https://maps.google.com/?q=High+Level+Road,+Godagama" target="_blank" class="contact-card">
                     <i class="fas fa-map-marker-alt"></i>
                     <h3>Location</h3>
                     <p>High Level Road, Godagama</p>
-                </div>
+                    <span class="action-btn">Open in Maps <i class="fas fa-external-link-alt"></i></span>
+                </a>
 
-                <div class="contact-card">
+                <!-- WhatsApp / Mobile Card (Opens WhatsApp Chat directly) -->
+                <a href="https://wa.me/94752541337?text=Hello%20Mihinadee%20Motors,%20I%20would%20like%20to%20make%20an%20inquiry." target="_blank" class="contact-card">
                     <i class="fab fa-whatsapp"></i>
                     <h3>WhatsApp / Mobile</h3>
-                    <p><a href="https://wa.me/94752541337" target="_blank">+94 75 254 1337</a></p>
-                </div>
+                    <p>+94 75 254 1337</p>
+                    <span class="action-btn">Chat on WhatsApp <i class="fab fa-whatsapp"></i></span>
+                </a>
 
-                <div class="contact-card">
+                <!-- Direct Phone Call Card -->
+                <a href="tel:052541334" class="contact-card">
                     <i class="fas fa-phone-alt"></i>
                     <h3>Landline</h3>
-                    <p><a href="tel:052541334">052 541 334</a></p>
-                </div>
+                    <p>052 541 334</p>
+                    <span class="action-btn">Call Now <i class="fas fa-phone"></i></span>
+                </a>
             </div>
         </section>
     </main>
