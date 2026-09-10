@@ -3,56 +3,198 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mihinadee Motors | Services</title>
+    <title>Mihinadee Motors | Professional Services</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* iOS Style Service Cards Layout */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 18px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            border-color: #d4af37;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .service-card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            padding-bottom: 12px;
+        }
+
+        .service-card-header i {
+            font-size: 24px;
+            color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+        }
+
+        .service-card-header h3 {
+            margin: 0;
+            font-size: 1.25rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .service-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .service-list li {
+            color: #cccccc;
+            font-size: 0.95rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.4;
+        }
+
+        .service-list li i {
+            color: #d4af37;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .badge-ios {
+            display: inline-block;
+            background: rgba(212, 175, 55, 0.15);
+            color: #d4af37;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">Mihinadee <span>Motors</span></div>
-        <nav>
+        <div class="logo">MIHINADEE <span>MOTORS</span></div>
+        <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle Navigation">☰</button>
+        <nav id="nav-menu">
             <a href="index.html">Home</a>
             <a href="services.html" class="active">Services</a>
             <a href="products.html">Products</a>
-            <a href="gallery.html">Projects</a>
+            <a href="vehicle-checker.html">AI Specs Checker</a>
+            <a href="projects.html">Projects</a>
             <a href="contact.html">Contact</a>
         </nav>
     </header>
 
-    <section class="hero">
-        <h1>OUR PROFESSIONAL <span>SERVICES</span></h1>
-        <p>Explore our full range of vehicle repair & modification options.</p>
-    </section>
+    <main class="container">
+        <section class="services-section">
+            <div class="section-header-wrap">
+                <h2 class="section-title">Our Professional Services</h2>
+                <p style="color: var(--text-muted); margin-top: 5px;">High-quality vehicle maintenance, upgrades, and protection solutions.</p>
+            </div>
 
-    <section class="container">
-        <div class="grid">
-            <div class="card">
-                <h3>Vehicle Modification</h3>
-                <p>Custom body kits, wrap installations, alloy wheel upgrades, LED lighting, and bespoke interior redesigns.</p>
-            </div>
-            <div class="card">
-                <h3>Mechanical Repairs</h3>
-                <p>Engine diagnostics, suspension overhauls, brake restoration, and precision wheel alignment.</p>
-            </div>
-            <div class="card">
-                <h3>Performance Tuning</h3>
-                <p>ECU remapping, exhaust upgrades, and high-performance setup for track or street driving.</p>
-            </div>
-            <div class="card">
-                <h3>Detailing & Protection</h3>
-                <p>Ceramic coating, paint protection film (PPF), deep interior detailing, and gold-standard finishing.</p>
-            </div>
-        </div>
-    </section>
+            <div class="services-grid">
 
-    <a href="https://wa.me/94752541337" target="_blank" class="whatsapp-float">
-        <i class="fab fa-whatsapp"></i>
-    </a>
+                <!-- Lock & Winder Repairs -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <i class="fas fa-key"></i>
+                        <h3>Lock & Winder Repairs</h3>
+                    </div>
+                    <ul class="service-list">
+                        <li><i class="fas fa-chevron-right"></i> Vehicle Lock Repair & Alignment</li>
+                        <li><i class="fas fa-chevron-right"></i> Window Winder Repair</li>
+                        <li><i class="fas fa-chevron-right"></i> Central Locking System Repairs</li>
+                    </ul>
+                </div>
+
+                <!-- Power Window Conversions -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <i class="fas fa-car-side"></i>
+                        <h3>Power Window Upgrades</h3>
+                    </div>
+                    <span class="badge-ios">Conversion Unit</span>
+                    <ul class="service-list">
+                        <li><i class="fas fa-chevron-right"></i> Manual Windows ➡️ Power Windows Conversion</li>
+                        <li><i class="fas fa-chevron-right"></i> Power Window Switch & Motor Replacement</li>
+                    </ul>
+                </div>
+
+                <!-- Security Systems -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Security & Remote Systems</h3>
+                    </div>
+                    <ul class="service-list">
+                        <li><i class="fas fa-chevron-right"></i> Security Alarm System Installation</li>
+                        <li><i class="fas fa-chevron-right"></i> Remote Lock & Unlock Kit Fitting</li>
+                        <li><i class="fas fa-chevron-right"></i> Keyless Entry Upgrades</li>
+                    </ul>
+                </div>
+
+                <!-- Styling & Protection -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <i class="fas fa-gem"></i>
+                        <h3>Styling & Protection</h3>
+                    </div>
+                    <ul class="service-list">
+                        <li><i class="fas fa-chevron-right"></i> High-Grade Tinted Glass Installation</li>
+                        <li><i class="fas fa-chevron-right"></i> Custom Body & Headlight Stickers</li>
+                        <li><i class="fas fa-chevron-right"></i> Step Board Protection Stickers</li>
+                    </ul>
+                </div>
+
+                <!-- Interior & Exterior Fittings -->
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <i class="fas fa-tools"></i>
+                        <h3>Interior & Exterior Fittings</h3>
+                    </div>
+                    <ul class="service-list">
+                        <li><i class="fas fa-chevron-right"></i> Custom Seat Covers & Floor Carpets</li>
+                        <li><i class="fas fa-chevron-right"></i> Door Visors & Chrome Accessories</li>
+                        <li><i class="fas fa-chevron-right"></i> Door Handles, Wiper Blades, Badges & Clips</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+    </main>
 
     <footer>
         <p>&copy; 2026 Mihinadee Motors. All Rights Reserved.</p>
     </footer>
 
+    <script>
+        function toggleMenu() {
+            var nav = document.getElementById('nav-menu');
+            var btn = document.querySelector('.menu-toggle');
+            if (nav) {
+                nav.classList.toggle('show');
+                if (btn) btn.innerHTML = nav.classList.contains('show') ? '✕' : '☰';
+            }
+        }
+    </script>
 </body>
 </html>
