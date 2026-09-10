@@ -6,53 +6,6 @@
     <title>Mihinadee Motors | Premium Car Care & Modifications</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        /* Floating WhatsApp Button */
-        .floating-whatsapp {
-            position: fixed;
-            bottom: 25px;
-            right: 25px;
-            background-color: #25d366;
-            color: #fff;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
-            z-index: 9999;
-            text-decoration: none;
-            transition: transform 0.3s ease;
-        }
-        .floating-whatsapp:hover {
-            transform: scale(1.1);
-            color: #fff;
-        }
-
-        /* Cart Badge in Nav */
-        .nav-cart-btn {
-            background: transparent;
-            border: none;
-            color: #d4af37;
-            font-size: 18px;
-            cursor: pointer;
-            position: relative;
-            padding: 5px 10px;
-            display: inline-flex;
-            align-items: center;
-        }
-        .cart-count-badge {
-            background: #e74c3c;
-            color: #ffffff;
-            border-radius: 50%;
-            padding: 2px 6px;
-            font-size: 10px;
-            font-weight: bold;
-            margin-left: 5px;
-        }
-    </style>
 </head>
 <body>
 
@@ -66,10 +19,9 @@
             <a href="vehicle-checker.html">AI Specs Checker</a>
             <a href="projects.html">Projects</a>
             <a href="contact.html">Contact</a>
-            <button class="nav-cart-btn" onclick="openCart()">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cartCount" class="cart-count-badge">0</span>
-            </button>
+            <a href="#" onclick="openCart(); return false;" class="cart-link">
+                <i class="fas fa-shopping-cart"></i> Cart (<span id="cartCount">0</span>)
+            </a>
         </nav>
     </header>
 
@@ -90,7 +42,7 @@
     </main>
 
     <!-- Floating WhatsApp Button -->
-    <a href="https://api.whatsapp.com/send/?phone=94752541337&text=Hi%2C%20I%20have%20an%20inquiry%20about%20Mihinadee%20Motors" class="floating-whatsapp" target="_blank" aria-label="Chat on WhatsApp">
+    <a href="https://wa.me/94752541337" class="whatsapp-float" target="_blank" aria-label="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -140,14 +92,14 @@
                             <p>${pDesc}</p>
                             <span class="price">${p.price}</span>
                             
-                            <div class="product-actions" style="display: flex; gap: 8px; margin-top: 10px;">
+                            <div class="product-actions">
                                 ${isOut 
-                                    ? `<button class="btn-gold-sm disabled-btn" style="width: 100%;" disabled>Out of Stock</button>` 
+                                    ? `<button class="btn-gold-sm disabled-btn" disabled>Out of Stock</button>` 
                                     : `
-                                        <a href="https://api.whatsapp.com/send/?phone=94752541337&text=I%20am%20interested%20in%20${encodeURIComponent(p.title)}" class="btn-gold-sm" target="_blank" style="flex: 1; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;">
-                                            <i class="fab fa-whatsapp"></i> WhatsApp Order
+                                        <a href="https://wa.me/94752541337?text=I%20am%20interested%20in%20${encodeURIComponent(p.title)}" class="btn-gold-sm" target="_blank">
+                                            <i class="fab fa-whatsapp"></i> Order
                                         </a>
-                                        <button onclick="addToCart('${p.title}', '${p.price}')" class="btn-gold-sm" style="padding: 0 12px; display: flex; align-items: center; justify-content: center;">
+                                        <button onclick="addToCart('${p.title}', '${p.price}')" class="btn-gold-sm">
                                             <i class="fas fa-shopping-cart"></i>
                                         </button>
                                     `
